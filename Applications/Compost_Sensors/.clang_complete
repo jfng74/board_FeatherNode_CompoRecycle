@@ -1,0 +1,48 @@
+-I/home/caribou/.platformio/packages/framework-arduinosam/cores/adafruit
+-I/home/caribou/.platformio/packages/framework-arduinosam/system/samd/CMSIS/CMSIS/Include
+-I/home/caribou/.platformio/packages/framework-arduinosam/system/samd/CMSIS-Atmel/CMSIS/Device/ATMEL
+-I/home/caribou/.platformio/packages/framework-arduinosam/variants/adafruit_feather_m0
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/SPI
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RadioHead-1.74
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit Unified Sensor
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/Wire
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit BME280 Library
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RTCZero/src
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit HTU21DF Library
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/lib/NodeFeatherCompost
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/src
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/lib/NodeFeatherCompost
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit BME280 Library
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit HTU21DF Library
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit Unified Sensor
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RTCZero/src
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RadioHead-1.74
+-I/home/caribou/.platformio/lib/Adafruit BME280 Library_ID166
+-I/home/caribou/.platformio/lib/Adafruit HTU21DF Library_ID566
+-I/home/caribou/.platformio/lib/Adafruit Unified Sensor_ID31
+-I/home/caribou/.platformio/lib/DS3231_ID1379
+-I/home/caribou/.platformio/lib/DS3232RTC_ID78
+-I/home/caribou/.platformio/lib/RTCZero_ID873/src
+-I/home/caribou/.platformio/lib/RadioHead_ID124
+-I/home/caribou/.platformio/lib/SdFat_ID322/src
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/HID
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/I2S/src
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/SAMD_AnalogCorrection/src
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/SPI
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/USBHost/src
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/Wire
+-I/home/caribou/.platformio/packages/toolchain-gccarmnoneeabi/arm-none-eabi/include
+-I/home/caribou/.platformio/packages/toolchain-gccarmnoneeabi/lib/gcc/arm-none-eabi/4.8.4/include
+-I/home/caribou/.platformio/packages/toolchain-gccarmnoneeabi/lib/gcc/arm-none-eabi/4.8.4/include-fixed
+-I/home/caribou/.platformio/packages/tool-unity
+-DF_CPU=48000000L
+-DUSBCON
+-DPLATFORMIO=30400
+-D__SAMD21G18A__
+-DARDUINO_ARCH_SAMD
+-DARDUINO_SAMD_FEATHER_M0
+-DARDUINO=10614
+-DUSB_VID=0x239A
+-DUSB_PID=0x800B
+-DUSB_PRODUCT="Adafruit Feather M0"
+-DUSB_MANUFACTURER="Adafruit"
