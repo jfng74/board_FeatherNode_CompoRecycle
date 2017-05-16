@@ -1,0 +1,55 @@
+Component,Description,Part,References,Value,Footprint,Quantity Per PCB,Datasheet
+1,,FEATHER_MO_LORA,Adafruit_Feather-1,FEATHER_MO_LORA,FEATHER_MO_LORA,1,
+2,single battery cell,Battery_Cell,BT1,Battery_Cell,BS-7,1,
+3,Unpolarized capacitor,C_Small,C1 C4 C5 C6 C7 C8 C12 C13 C14,0.1uF,C_0805_HandSoldering,9,
+4,Unpolarized capacitor,C_Small,C2 C3,10pF,C_0805_HandSoldering,2,
+5,Polarised capacitor,CP,C9 C10 C11,10uF,CP_Elec_4x4.5,3,
+6,"Connector, single row, 01x02, pin header",CONN_01X02,CAN-1,CAN_1,0436500219,1,
+7,"Connector, single row, 01x02, pin header",CONN_01X02,CAN-2,CAN_2,0436500219,1,
+8,"Connector, single row, 01x02",CAN_NODE_JUNCTION,CNJ-1,CAN_NODE_JUNCTION,CAN_NODE_JONCTION,1,
+9,audio jack TRS 6 pins,JACK_TRS_3PINS,CT-1,JACK_TRS_3PINS,SJ1-3523N,1,
+10,LED generic,LED,D1 D2,LED,LED-5MM,2,
+11,"Connector, single row, 01x04, pin header",CONN_01X04,I2C-1,I2C,0436500417,1,
+12,Inductor with Ferrite Core,L_Core_Ferrite,L1 L2 L3 L4 L5 L6 L7 L8 L9 L10 L11 L12 L13 L14 L15 L16,L_Core_Ferrite,R_0805_HandSoldering,16,
+13,"Connector, single row, 01x02, pin header",CONN_01X02,NTC-1,NTC_1,Molex_KK-6410-02_02x2.54mm_Straight,1,
+14,"Connector, single row, 01x02, pin header",CONN_01X02,NTC-2,NTC_2,Molex_KK-6410-02_02x2.54mm_Straight,1,
+15,"Connector, single row, 01x03, pin header",CONN_01X03,OW-1,1-Wire,0436500317,1,
+16,"Connector, single row, 01x04, pin header",CONN_01X04,PWR-1,CONN_01X04,0430450428,1,
+17,"60V Vds, 0.115A Id, N-channel MOSFET, SOT-23",DMG1012T,Q1 Q2,DMG1012UW,SOT-23_Handsoldering,2,https://www.fairchildsemi.com/datasheets/2N/2N7002.pdf
+18,Transistor P-MOSFET with substrate diode (general),Q_PMOS_SGD,Q3,LP0701_SGD,TO-92_Inline_Narrow_Oval,1,
+19,"45V Vce, 0.8A Ic, NPN, SOT-23",MMBT3904,Q4 Q5 Q6,MMBT3904,SOT-23_Handsoldering,3,http://www.fairchildsemi.com/ds/BC/BC817.pdf
+20,Resistor,R,R15 R22,100,R_0805_HandSoldering,2,
+21,Resistor,R,R18,100k,R_0805_HandSoldering,1,
+22,Resistor,R,R7 R8 R11 R12 R13 R14 R16 R17 R19 R20 R21,10k,R_0805_HandSoldering,11,
+23,Resistor,R,R1 R2 R9 R10,1k,R_0805_HandSoldering,4,
+24,Resistor,R,R4 R6,2.2k,R_0805_HandSoldering,2,
+25,Resistor,R,R5,4.7k,R_0805_HandSoldering,1,
+26,Resistor,R,R3,50k,R_0805_HandSoldering,1,
+27,,ORD211-1015,S1,ORD211-1015,Pin_Header_Straight_1x02_Pitch2.54mm,1,
+28,"Connector, single row, 01x03, pin header",CONN_01X03,SER-1,SERIAL,Molex_KK-6410-03_03x2.54mm_Straight,1,
+29,"Connector, single row, 01x02, pin header",CONN_01X02,SSR-1,SSR_1,Molex_KK-6410-02_02x2.54mm_Straight,1,
+30,"Connector, single row, 01x02, pin header",CONN_01X02,SSR-2,SSR_2,Molex_KK-6410-02_02x2.54mm_Straight,1,
+31,"Connector, single row, 01x04, pin header",CONN_01X04,TM-1,TmpMoisture,Molex_KK-6410-04_04x2.54mm_Straight,1,
+32,"32Kb (4096x8) Serial EEPROM with Unique Serial Number, SO8",AT24LC256,U6,AT24LC256,SOIJ-8_5.3x5.3mm_Pitch1.27mm,1,http://www.atmel.com/Images/Atmel-8869-SEEPROM-AT24CS32-Datasheet.pdf
+33,,DS18B20,U2,DS18B20,TO-92_Inline_Wide,1,
+34,Extremely Accurate I2C-Integrated RTC/TCXO/Crystal SOIC-16,DS3231,U7,DS3231,SOIC-16W_7.5x10.3mm_Pitch1.27mm,1,http://datasheets.maximintegrated.com/en/ds/DS3231.pdf
+35,,MCP2515,U5,MCP2515,SOIC-18W_7.5x11.6mm_Pitch1.27mm,1,
+36,,SN65HVD232Q,U4,SN65HVD232Q,SOIC-8_3.9x4.9mm_Pitch1.27mm,1,
+37,DC Barrel Jack,BARREL_JACK,VT-1,BARREL_JACK,Molex_KK-6410-03_03x2.54mm_Straight,1,
+38,"Two pin crystal, small symbol",Crystal_Small,Y1,16MHz,SMD-2520,1,
+39,Micro SD Card Socket,Micro_SD_Card_no_shield,uSD-1,Micro_SD_Card_no_shield,114-00841-68,1,http://katalog.we-online.de/em/datasheet/693072010801.pdf
+
+
+
+
+
+Component Groups:,39
+Component Count:,84
+Fitted Components:,84
+Number of PCBs:,1
+Total components:,84
+Schematic Version:,
+Schematic Date:,2017-02-23
+BoM Date:,lun 08 mai 2017 14:56:23 EDT
+Schematic Source:,/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Kicad/noeud_senseur.sch
+KiCad Version:,Eeschema no-vcs-found-01f5a12~58~ubuntu16.04.1

@@ -1,0 +1,334 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:jfng
+LIBS:noeud_senseur-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 6 6
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Micro_SD_Card J17
+U 1 1 58E71327
+P 7025 5275
+F 0 "J17" H 7025 4575 50  0000 C CNN
+F 1 "Micro_SD_Card" H 7075 5900 50  0000 C CNN
+F 2 "caribou:114-00841-68" H 4775 1650 50  0001 C CNN
+F 3 "" H 3625 1350 50  0001 C CNN
+	1    7025 5275
+	1    0    0    1   
+$EndComp
+$Comp
+L +3.3V #PWR56
+U 1 1 58E7132E
+P 4825 4275
+F 0 "#PWR56" H 1300 -1200 50  0001 C CNN
+F 1 "+3.3V" H 4950 4300 50  0000 C CNN
+F 2 "" H 1300 -1050 50  0001 C CNN
+F 3 "" H 1300 -1050 50  0001 C CNN
+	1    4825 4275
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	6125 4875 4625 4875
+Wire Wire Line
+	6125 4975 4625 4975
+Wire Wire Line
+	6125 5075 5100 5075
+Wire Wire Line
+	4925 5175 6125 5175
+Wire Wire Line
+	4625 5275 6125 5275
+Wire Wire Line
+	6125 5375 4625 5375
+Wire Wire Line
+	6125 5475 4625 5475
+Wire Wire Line
+	4925 5175 4925 5075
+Wire Wire Line
+	4925 5075 4625 5075
+NoConn ~ 3325 4875
+NoConn ~ 3325 5575
+Wire Wire Line
+	5100 5075 5100 5850
+Wire Wire Line
+	5100 5775 4625 5775
+$Comp
+L GND #PWR59
+U 1 1 58E71341
+P 5100 5850
+F 0 "#PWR59" H 5150 5900 50  0001 C CNN
+F 1 "GND" H 5105 5677 50  0000 C CNN
+F 2 "" H -2800 3750 50  0001 C CNN
+F 3 "" H -2800 3750 50  0001 C CNN
+	1    5100 5850
+	1    0    0    -1  
+$EndComp
+Connection ~ 5100 5775
+Wire Wire Line
+	4825 5175 4625 5175
+Wire Wire Line
+	4825 4275 4825 5275
+$Comp
+L +3.3V #PWR55
+U 1 1 58E7134A
+P 2175 4575
+F 0 "#PWR55" H -1350 -900 50  0001 C CNN
+F 1 "+3.3V" H 2300 4600 50  0000 C CNN
+F 2 "" H -1350 -750 50  0001 C CNN
+F 3 "" H -1350 -750 50  0001 C CNN
+	1    2175 4575
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	3325 5175 2175 5175
+Wire Wire Line
+	2175 4575 2175 5275
+Wire Wire Line
+	2175 5275 3325 5275
+Connection ~ 2175 5175
+Connection ~ 4825 5275
+Connection ~ 4825 5175
+$Comp
+L C_Small C12
+U 1 1 58E71356
+P 5050 4475
+F 0 "C12" H 5142 4521 50  0000 L CNN
+F 1 "0.1uF" H 5142 4430 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H -925 -2300 50  0001 C CNN
+F 3 "" H -925 -2300 50  0001 C CNN
+	1    5050 4475
+	1    0    0    -1  
+$EndComp
+$Comp
+L C_Small C13
+U 1 1 58E7135D
+P 5425 4475
+F 0 "C13" H 5517 4521 50  0000 L CNN
+F 1 "0.1uF" H 5517 4430 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H -550 -2300 50  0001 C CNN
+F 3 "" H -550 -2300 50  0001 C CNN
+	1    5425 4475
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4825 4350 5425 4350
+Wire Wire Line
+	5425 4350 5425 4375
+Connection ~ 4825 4350
+Wire Wire Line
+	5050 4375 5050 4350
+Connection ~ 5050 4350
+Wire Wire Line
+	5050 4575 5425 4575
+Wire Wire Line
+	5225 4575 5225 4650
+Connection ~ 5225 4575
+$Comp
+L GND #PWR60
+U 1 1 58E7136C
+P 5225 4650
+F 0 "#PWR60" H -2800 3375 50  0001 C CNN
+F 1 "GND" H 5230 4477 50  0000 C CNN
+F 2 "" H -2800 3625 50  0001 C CNN
+F 3 "" H -2800 3625 50  0001 C CNN
+	1    5225 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR62
+U 1 1 58E71372
+P 7475 4725
+F 0 "#PWR62" H -550 3450 50  0001 C CNN
+F 1 "GND" H 7480 4552 50  0000 C CNN
+F 2 "" H -550 3700 50  0001 C CNN
+F 3 "" H -550 3700 50  0001 C CNN
+	1    7475 4725
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7475 4725 7475 4675
+Wire Wire Line
+	7475 4675 7825 4675
+$Comp
+L EClamp2410P U8
+U 1 1 58E7137A
+P 3975 5225
+F 0 "U8" H 4350 5850 60  0000 C CNN
+F 1 "EClamp2410P" H 3950 4500 60  0000 C CNN
+F 2 "caribou:EClamp2410p" H -2750 3475 60  0001 C CNN
+F 3 "" H -2750 3475 60  0001 C CNN
+	1    3975 5225
+	-1   0    0    -1  
+$EndComp
+Text HLabel 3325 4975 0    60   Output ~ 0
+MISO
+Text HLabel 3325 5075 0    60   Input ~ 0
+SCK
+Text HLabel 3325 5375 0    60   Input ~ 0
+MOSI
+Text HLabel 3325 5475 0    60   Input ~ 0
+SD_CS
+Wire Wire Line
+	4625 5575 6125 5575
+$Comp
+L DS3231 U9
+U 1 1 58E7289F
+P 5025 2200
+F 0 "U9" H 5300 2600 50  0000 C CNN
+F 1 "DS3231" H 4775 1775 50  0000 C CNN
+F 2 "Housings_SOIC:SOIC-16_7.5x10.3mm_Pitch1.27mm" H -1750 -1075 50  0001 L CNN
+F 3 "" H -1530 -425 50  0001 C CNN
+	1    5025 2200
+	-1   0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR57
+U 1 1 58E728A6
+P 5025 1225
+F 0 "#PWR57" H -275 -1875 50  0001 C CNN
+F 1 "+3.3V" H 5040 1398 50  0000 C CNN
+F 2 "" H -275 -1725 50  0001 C CNN
+F 3 "" H -275 -1725 50  0001 C CNN
+	1    5025 1225
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR58
+U 1 1 58E728AC
+P 5025 3000
+F 0 "#PWR58" H -700 -325 50  0001 C CNN
+F 1 "GND" H 5030 2827 50  0000 C CNN
+F 2 "" H -700 -75 50  0001 C CNN
+F 3 "" H -700 -75 50  0001 C CNN
+	1    5025 3000
+	1    0    0    -1  
+$EndComp
+Text Label 5550 2100 0    60   ~ 0
+SCL
+Text Label 5550 2200 0    60   ~ 0
+SDA
+$Comp
+L Battery_Cell BT2
+U 1 1 58E728B4
+P 4300 2675
+F 0 "BT2" H 4418 2771 50  0000 L CNN
+F 1 "Battery_Cell" H 4418 2680 50  0000 L CNN
+F 2 "caribou:BS-7" V -2150 -1415 50  0001 C CNN
+F 3 "" V -2150 -1415 50  0001 C CNN
+	1    4300 2675
+	1    0    0    -1  
+$EndComp
+Text Label 4475 1475 0    60   ~ 0
+SQW
+NoConn ~ 4525 2200
+NoConn ~ 5525 2400
+$Comp
+L PWR_FLAG #FLG4
+U 1 1 58E728BE
+P 4300 2375
+F 0 "#FLG4" H -1800 -1000 50  0001 C CNN
+F 1 "PWR_FLAG" H 4300 2549 50  0000 C CNN
+F 2 "" H -1800 -1075 50  0001 C CNN
+F 3 "" H -1800 -1075 50  0001 C CNN
+	1    4300 2375
+	1    0    0    -1  
+$EndComp
+$Comp
+L C_Small C14
+U 1 1 58E728C4
+P 5675 1575
+F 0 "C14" H 5767 1621 50  0000 L CNN
+F 1 "0.1uF" H 5767 1530 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0805_HandSoldering" H -300 -5200 50  0001 C CNN
+F 3 "" H -300 -5200 50  0001 C CNN
+	1    5675 1575
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR61
+U 1 1 58E728CB
+P 5675 1725
+F 0 "#PWR61" H -50 -1600 50  0001 C CNN
+F 1 "GND" H 5680 1552 50  0000 C CNN
+F 2 "" H -50 -1350 50  0001 C CNN
+F 3 "" H -50 -1350 50  0001 C CNN
+	1    5675 1725
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	5675 1675 5675 1725
+Connection ~ 5025 1450
+Wire Wire Line
+	5675 1450 5025 1450
+Wire Wire Line
+	5675 1475 5675 1450
+Connection ~ 4300 2400
+Connection ~ 4450 2100
+Wire Wire Line
+	4450 1475 4700 1475
+Wire Wire Line
+	4450 2100 4450 1475
+Connection ~ 5025 2875
+Wire Wire Line
+	4300 2875 5025 2875
+Wire Wire Line
+	4300 2775 4300 2875
+Wire Wire Line
+	4300 2400 4525 2400
+Wire Wire Line
+	4300 2375 4300 2475
+Wire Wire Line
+	5525 2200 5800 2200
+Wire Wire Line
+	5525 2100 5800 2100
+Wire Wire Line
+	5025 2700 5025 3000
+Wire Wire Line
+	5025 1225 5025 1700
+Wire Wire Line
+	3875 2100 4525 2100
+Text HLabel 3875 2100 0    60   Output ~ 0
+INT_SQW
+Text HLabel 5800 2100 2    60   Input ~ 0
+I2C_SCL
+Text HLabel 5800 2200 2    60   BiDi ~ 0
+I2C_SDA
+$EndSCHEMATC
