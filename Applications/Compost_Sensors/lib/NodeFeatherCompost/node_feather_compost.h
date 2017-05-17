@@ -2,6 +2,8 @@
 #define NODE_FEATHER_COMPOST_H
 
 #include <SPI.h>
+#include <Wire.h>
+#include <DS3231.h>
 #include <RH_RF95.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_HTU21DF.h>
@@ -14,6 +16,9 @@
 #define RFM95_RST 4
 #define RFM95_INT 3
 #define VBATPIN A7
+#define NTC_1 A0
+#define NTC_2 A1
+#define BME280_ADDRESS 0x76
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
@@ -21,7 +26,7 @@ class NodeFeatherCompost{
 public:
   NodeFeatherCompost();
   void send_batt_voltage(void);
-  void send_all(void);
+  void send_all_data(void);
   void send_temp(uint8_t analog_pin);
   void send_humidity(void);
   void blink_led(uint8_t nb_flash, uint32_t delais);
@@ -31,6 +36,9 @@ public:
 private:
   Adafruit_HTU21DF htu;
   Adafruit_BME280 bme;
+  DS3231 clock;
+  RTCDateTime dt;
+
   float read_batt_voltage(void);
   float read_temp(uint8_t analog_pin);
   bool htu_ok;
@@ -39,10 +47,18 @@ private:
   RH_RF95 *rf95;
 //  RH_RF95 rf95_jf(RFM95_CS, RFM95_INT);
   int samples[NUMSAMPLES];
-  char radiopacket[25];
+  char radiopacket[33];
   // Should be a message for us now
   uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
   uint8_t len = sizeof(buf);
+
+  float ntc_1;
+  float ntc_2;
+  float batt_voltage;
+  float bme_humidity;
+  float bme_pression;
+  float bme_temp;
+  float conductivite;
 };
 
 #endif
