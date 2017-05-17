@@ -18,7 +18,7 @@
 #define VBATPIN A7
 #define NTC_1 A0
 #define NTC_2 A1
-#define BME280_ADDRESS 0x76
+//#define BME280_ADDRESS 0x76
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 
