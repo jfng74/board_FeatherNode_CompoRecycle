@@ -4,7 +4,7 @@
 
 // Node Address
 #define NODE_ADDR 0x00
-
+#define OPERATION_TIME 5
 //RFM variables
 // Change to 434.0 or other frequency, must match RX's freq!
 #define RF95_FREQ 433.0
@@ -14,7 +14,8 @@
 NodeFeatherCompost::NodeFeatherCompost(){
   htu_ok = false;
   bme_ok = false;
-
+  txpower = 5;
+  delay_minutes = 1;
 
   // Initialisation du port serie a 9600 baud
   Serial1.begin(9600);
@@ -68,11 +69,12 @@ NodeFeatherCompost::NodeFeatherCompost(){
 	// The default transmitter power is 13dBm, using PA_BOOST.
 	// If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then
 	// you can set transmitter powers from 5 to 23 dBm:
-	rf95->setTxPower(5, false);
+	rf95->setTxPower(txpower, false);
   Serial1.println("Fin initialisation");
 }
 
 void NodeFeatherCompost::loop(void){
+
   Serial1.println("Debut Loop");
   ntc_1 = read_temp(NTC_1);
   ntc_2 = read_temp(NTC_2);
@@ -87,9 +89,14 @@ void NodeFeatherCompost::loop(void){
     bme_pression = 0;
     bme_temp = 0;
   }
-  conductivite = 0;
+  conductivite = read_conductivite(A3);
 
+  send_node_ready();
+  if(ReceiveRFData()){
+      parse_data(buf);  //  Check et envoie les donnees
+  }
   send_all_data();
+
 
 //  dt = clock.getDateTime();
 //  Serial.println(clock.dateFormat("d-m-Y H:i:s - l", dt));
@@ -100,16 +107,15 @@ void NodeFeatherCompost::loop(void){
 //  if (clock.isAlarm1(false)) // check if alarm 1 is set
 //  { clock.armAlarm1(true); // if yes, then arm it again for next period
 
+/* Enlever les commentaires pour activer le rtc
   Serial1.println("clock.begin");
   clock.begin();
   clock.setBattery(true,false);
   clock.enableOutput(false);
   Serial1.println("clock.setAlarm1");
   clock.setAlarm1(0, 0, 0, 5, DS3231_MATCH_S,true);
-//  clock.armAlarm1(true);
-//  clock.clearAlarm1();
+*/
 //  }
-
 
 /*
   if (rf95->available()) {
@@ -126,6 +132,8 @@ void NodeFeatherCompost::loop(void){
     }
   }
   */
+//    delay(1000);
+  power_off();
    Serial1.println("Fin Loop");
 }
 
@@ -169,8 +177,8 @@ void NodeFeatherCompost::send_all_data(void){
   byte* float_array_bme_temp;
 	float_array_bme_temp = (byte*) &bme_temp;
 
-  byte* float_array_conductivite;
-	float_array_conductivite = (byte*) &conductivite;
+  byte* uint16_array_conductivite;
+	uint16_array_conductivite = (byte*) &conductivite;
 
   byte* float_array_batt_voltage;
 	float_array_batt_voltage = (byte*) &batt_voltage;
@@ -210,18 +218,18 @@ void NodeFeatherCompost::send_all_data(void){
 	radiopacket[22]= float_array_batt_voltage[1];
 	radiopacket[23]= float_array_batt_voltage[0];
 
+  //Pression Atmospherique
   radiopacket[24]= float_array_bme_pression[3];
 	radiopacket[25]= float_array_bme_pression[2];
 	radiopacket[26]= float_array_bme_pression[1];
 	radiopacket[27]= float_array_bme_pression[0];
 
-  radiopacket[28]= float_array_conductivite[3];
-	radiopacket[29]= float_array_conductivite[2];
-	radiopacket[30]= float_array_conductivite[1];
-	radiopacket[31]= float_array_conductivite[0];
+  //Conductivite
+  radiopacket[28]= uint16_array_conductivite[1];
+	radiopacket[29]= uint16_array_conductivite[0];
+  radiopacket[30]= txpower;
 
-
-	radiopacket[32]= FEATHER_MSG_END;
+	radiopacket[31]= FEATHER_MSG_END;
 
 	rf95->send((uint8_t *)radiopacket, sizeof(radiopacket));
 	rf95->waitPacketSent();
@@ -314,6 +322,9 @@ void NodeFeatherCompost::blink_led(uint8_t nb_flash, uint32_t delais){
 }
 
 void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
+  byte uint32_array[4];
+/*
+
 	if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_GET_ALL_DATA && Thebuf[2]==NODE_ADDR && Thebuf[3]==READ_ALL_DATA) {
 		Serial1.println("sendAll");
 		send_all_data();
@@ -331,14 +342,103 @@ void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
 	    }
 	    rtc.standbyMode();
 	}
-
+  */
+/*
 	else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_QUERY_DATA && Thebuf[2]==NODE_ADDR && Thebuf[3]==TEMP_1) {
 		send_temp(THERMISTORPIN_A0);
 		Serial1.println("Send temp 1");
 
     }
-	else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_QUERY_DATA && Thebuf[2]==NODE_ADDR && Thebuf[3]==TEMP_2) {
-		send_temp(THERMISTORPIN_A1);
-		Serial1.println("Send temp 2");
+    */
+	if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_NODE_DELAY && Thebuf[2]==NODE_ADDR){
+		delay_minutes = Thebuf[3];
+		Serial1.println("Set new delay minute");
     }
+  else if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_CLOCK && Thebuf[2]==NODE_ADDR){
+    uint32_t timeFromPC;
+    uint32_array[3]=buf[3];
+    uint32_array[2]=buf[4];
+    uint32_array[1]=buf[5];
+    uint32_array[0]=buf[6];
+    memcpy(&timeFromPC,&uint32_array,sizeof(timeFromPC));
+    Serial1.print("timeFromPC : ");Serial1.println(timeFromPC);
+    clock.begin();
+    clock.setDateTime(timeFromPC);
+    dt = clock.getDateTime();
+    Serial1.println(clock.dateFormat("d-m-Y H:i:s",dt));
+  }
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_INCREASE_RF && Thebuf[2]==NODE_ADDR && Thebuf[3]==FEATHER_MSG_END)
+     {
+       txpower++;
+       if (txpower>23)
+            txpower = 5;
+       rf95->setTxPower(txpower, false);
+  		Serial1.println("txpower set to:");
+      Serial1.println(txpower);
+
+      }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_DECREASE_RF && Thebuf[2]==NODE_ADDR && Thebuf[3]==FEATHER_MSG_END)
+           {
+             txpower--;
+             if (txpower<5)
+                  txpower = 23;
+             rf95->setTxPower(txpower, false);
+        		Serial1.println("txpower set to:");
+            Serial1.println(txpower);
+
+            }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
  }
+ byte NodeFeatherCompost::ReceiveRFData(void){
+ 	if (rf95->waitAvailableTimeout(50)) {
+ 	// Should be a reply message for us now
+ 		if (rf95->recv(buf, &len)) {
+ 			return 1;
+ 		}
+ 		else {
+ 			Serial1.println("recv failed");
+ 		}
+ 	}
+ 	else {
+ 		//Serial1.println("No reply from the node!");
+ 		return 0;
+ 	}
+// 	delay(400);
+ 	return 1;
+ }
+
+uint16_t NodeFeatherCompost::read_conductivite(uint8_t analog_pin){
+  return analogRead(analog_pin);
+}
+
+void NodeFeatherCompost::power_off(void){
+//  Serial1.println("clock.begin");
+  clock.begin();
+  dt = clock.getDateTime();
+  clock.setBattery(true,false);
+  clock.enableOutput(false);
+//  Serial1.println("clock.setAlarm1");
+  uint8_t minutes_alarme = dt.minute + delay_minutes;
+  if(minutes_alarme >59)
+    minutes_alarme = minutes_alarme - 60;
+  clock.setAlarm1(0, 0, minutes_alarme, OPERATION_TIME * NODE_ADDR, DS3231_MATCH_M_S,true);
+}
+
+void NodeFeatherCompost::send_node_ready(void){
+  radiopacket[0]=FEATHER_MSG_HEADER;
+	radiopacket[1]=FEATHER_MSG_NODE_READY;
+	radiopacket[2]=NODE_ADDR;
+  radiopacket[3]= FEATHER_MSG_END;
+
+  rf95->send((uint8_t *)radiopacket, 4);
+  rf95->waitPacketSent();
+
+}
