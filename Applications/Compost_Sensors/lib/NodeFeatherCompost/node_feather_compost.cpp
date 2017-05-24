@@ -357,7 +357,7 @@ void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
 		delay_minutes = Thebuf[3];
 		Serial1.print("Set new delay minute : ");Serial1.println(delay_minutes);
     }
-  else if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_CLOCK && Thebuf[2]==NODE_ADDR){
+  else if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_CLOCK && Thebuf[2]==NODE_ADDR && Thebuf[7]==FEATHER_MSG_END){
     Serial1.println("FEATHER_MSG_SET_CLOCK");
     uint32_t timeFromPC;
     uint32_array[3]=buf[3];
