@@ -110,7 +110,8 @@ void NodeFeatherCompost::loop(void){
   }
   conductivite = read_conductivite(A3);
 
-  Serial1.println("send_node_ready");
+
+
   send_node_ready();
   if(ReceiveRFData()){
       parse_data(buf);  //  Check et envoie les donnees
@@ -349,6 +350,31 @@ void NodeFeatherCompost::blink_led(uint8_t nb_flash, uint32_t delais){
 
 void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
   byte uint32_array[4];
+  Serial1.println("*******************************");
+/*
+  Serial1.print("Thebuf[0] : ");
+  Serial1.println(Thebuf[0]);
+  Serial1.print("Thebuf[1] : ");
+  Serial1.println(Thebuf[1]);
+  Serial1.print("Thebuf[2] : ");
+  Serial1.println(Thebuf[2]);
+  Serial1.print("Thebuf[3] : ");
+  Serial1.println(Thebuf[3]);
+  Serial1.print("Thebuf[4] : ");
+  Serial1.println(Thebuf[4]);
+  Serial1.print("Thebuf[5] : ");
+  Serial1.println(Thebuf[5]);
+  Serial1.print("Thebuf[6] : ");
+  Serial1.println(Thebuf[6]);
+  Serial1.print("Thebuf[7] : ");
+  Serial1.println(Thebuf[7]);
+  Serial1.print("Thebuf[8] : ");
+  Serial1.println(Thebuf[8]);
+  Serial1.print("Thebuf[9] : ");
+  Serial1.println(Thebuf[9]);
+*/
+
+
 
 	if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_NODE_DELAY && Thebuf[2]==NODE_ADDR){
 		delay_minutes = Thebuf[3];
@@ -407,7 +433,7 @@ void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
 
  }
  byte NodeFeatherCompost::ReceiveRFData(void){
- 	if (rf95->waitAvailableTimeout(50)) {
+ 	if (rf95->waitAvailableTimeout(500)) {
  	// Should be a reply message for us now
  		if (rf95->recv(buf, &len)) {
  			return 1;
@@ -432,6 +458,7 @@ void NodeFeatherCompost::power_off(void){
 //  Serial1.println("clock.begin");
   clock.begin();
   dt = clock.getDateTime();
+  Serial1.println(clock.dateFormat("d-m-Y H:i:s - l", dt));
   clock.setBattery(true,false);
   clock.enableOutput(false);
 //  Serial1.println("clock.setAlarm1");
@@ -442,6 +469,7 @@ void NodeFeatherCompost::power_off(void){
 }
 
 void NodeFeatherCompost::send_node_ready(void){
+  Serial1.println("send_node_ready");
   radiopacket[0]=FEATHER_MSG_HEADER;
 	radiopacket[1]=FEATHER_MSG_NODE_READY;
 	radiopacket[2]=NODE_ADDR;
