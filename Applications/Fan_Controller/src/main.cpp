@@ -514,6 +514,21 @@ void parseRF_data(){
       Serial1.println("FEATHER_MSG_NODE_READY");
       SendSSRReady(buf[2]);
   }
+
+  else if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_CLOCK && Thebuf[2]==NODE_ADDR){
+    Serial1.println("FEATHER_MSG_SET_CLOCK");
+    uint32_t timeFromPC;
+    uint32_array[3]=buf[3];
+    uint32_array[2]=buf[4];
+    uint32_array[1]=buf[5];
+    uint32_array[0]=buf[6];
+    memcpy(&timeFromPC,&uint32_array,sizeof(timeFromPC));
+    Serial1.print("timeFromPC : ");Serial1.println(timeFromPC);
+    clock.setDateTime(timeFromPC);
+    dt = clock.getDateTime();
+    Serial1.println(clock.dateFormat("d-m-Y H:i:s",dt));
+  }
+
   else if (buf[0]==FEATHER_MSG_HEADER
     && buf[1]==FEATHER_MSG_RESPONSE_ALL_DATA
     && buf[3]==READ_ALL_DATA ) {
