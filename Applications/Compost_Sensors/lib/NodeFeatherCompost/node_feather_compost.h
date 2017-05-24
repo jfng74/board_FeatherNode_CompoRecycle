@@ -27,8 +27,10 @@ public:
   NodeFeatherCompost();
   void send_batt_voltage(void);
   void send_all_data(void);
+  void send_node_ready(void);
   void send_temp(uint8_t analog_pin);
   void send_humidity(void);
+  void power_off(void);
   void blink_led(uint8_t nb_flash, uint32_t delais);
   void parse_data(uint8_t Thebuf[]);
   void loop(void);
@@ -41,16 +43,19 @@ private:
 
   float read_batt_voltage(void);
   float read_temp(uint8_t analog_pin);
+  uint16_t read_conductivite(uint8_t analog_pin);
+  byte ReceiveRFData(void);
   bool htu_ok;
   bool bme_ok;
   RTCZero rtc;
   RH_RF95 *rf95;
 //  RH_RF95 rf95_jf(RFM95_CS, RFM95_INT);
   int samples[NUMSAMPLES];
-  char radiopacket[33];
+  char radiopacket[35];
   // Should be a message for us now
   uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
   uint8_t len = sizeof(buf);
+  uint8_t txpower;
 
   float ntc_1;
   float ntc_2;
@@ -58,7 +63,10 @@ private:
   float bme_humidity;
   float bme_pression;
   float bme_temp;
-  float conductivite;
+  uint16_t conductivite;
+  int i;
+  uint8_t delay_minutes;
+
 };
 
 #endif
