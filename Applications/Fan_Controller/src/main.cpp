@@ -3,7 +3,8 @@
 #include <Wire.h>
 #include <DS3231.h>
 #include <RH_RF95.h>
-
+#include <LiquidCrystal_PCF8574.h>
+#include <stdlib.h>
 #include "FanCompostMsg.h"
 
 #define NB_NODES 4
@@ -34,12 +35,15 @@ RTCDateTime dt;
 
 // Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
+LiquidCrystal_PCF8574 lcd(0x3f);
+char lcd_buffer[20];
+
 
 struct node_data {
   float temp[4];
   float humidity_1;
   float pression;
-  float conductivite;
+  uint16_t conductivite;
   float battery_voltage;
   int8_t last_rssi;
 };
@@ -56,7 +60,6 @@ byte float_array_t_consigne[4];
 
 uint16_t delay_ready_for_command;
 
-
 uint8_t i;
 uint8_t ii;
 uint8_t nodes_list[NB_NODES] = {0,1,2,3};
@@ -69,6 +72,23 @@ char radiopacket[76];
 // Should be a message for us now
 uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
 uint8_t len = sizeof(buf);
+
+
+// constants won't change. They're used here to
+// set pin numbers:
+const int buttonPin = 5;    // the number of the pushbutton pin
+const int ledPin = 13;      // the number of the LED pin
+
+// Variables will change:
+int ledState = HIGH;         // the current state of the output pin
+int buttonState;             // the current reading from the input pin
+int lastButtonState = LOW;   // the previous reading from the input pin
+
+// the following variables are unsigned long's because the time, measured in miliseconds,
+// will quickly become a bigger number than can be stored in an int.
+unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
+unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
+
 
 void writeEEPROM(int deviceaddress, unsigned int eeaddress, byte data );
 byte readEEPROM(int deviceaddress, unsigned int eeaddress );
@@ -88,12 +108,15 @@ void FanMotor(bool motor_state);
 void SendSetpoint (byte node_address);
 void SendBatVoltage(byte node_address);
 void SendRelayState(byte node_address);
-
+void SendIncreasePower (byte node_address);
 
 void setup() {
   // Initialisation du port serie a 9600 baud
 	Serial1.begin(9600);
   Serial1.println("Debut Setup");
+
+  lcd.begin(20,4);
+
 
   Serial1.println("clock.begin");
   clock.begin();
@@ -107,10 +130,10 @@ void setup() {
 	// Initialisation de la pin de sortie pour le SSR
 	pinMode(18, OUTPUT);
 	digitalWrite(18, LOW); // motor is off SSR is off.
-
+  pinMode(buttonPin, INPUT_PULLUP);
 	// Initialisation de la pin de sortie pour la led rouge et eteint la led
-	pinMode(13, OUTPUT);
-	digitalWrite(13, LOW);
+	pinMode(ledPin, OUTPUT);
+	digitalWrite(ledPin, LOW);
 
 	// Initialisation de la la pin de reset pour le RFM et place la pin en mode non-reset
 	pinMode(RFM95_RST, OUTPUT);
@@ -175,13 +198,47 @@ void setup() {
 }
 
 void loop() {
-  Serial1.println("Debut Loop");
+  int reading;
+
+  //Serial1.println("Debut Loop");
 	i=0;
 	t_avg=0;
 	clear_nodes_data();
   if(ReceiveRFData()){
     parseRF_data();
   }
+  reading = digitalRead(buttonPin);
+
+  if (reading != lastButtonState) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+  }
+
+ if ((millis() - lastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer
+    // than the debounce delay, so take it as the actual current state:
+
+    // if the button state has changed:
+    if (reading != buttonState) {
+      buttonState = reading;
+
+      // only toggle the LED if the new button state is HIGH
+      if (buttonState == HIGH) {
+        SendIncreasePower(0x00);
+        Serial1.println("Button press");
+        ledState = !ledState;
+      }
+    }
+  }
+
+  // set the LED:
+  digitalWrite(ledPin, ledState);
+
+  // save the reading.  Next time through the loop,
+  // it'll be the lastButtonState:
+  lastButtonState = reading;
+
+
 
 /*
 
@@ -297,7 +354,7 @@ void loop() {
 		relais_etat = 0;
 	}
   */
-  Serial1.println("Fin Loop");
+//  Serial1.println("Fin Loop");
 
 }
 
@@ -345,7 +402,7 @@ void FanMotor(bool motor_state){
 }
 
 byte ReceiveRFData(void){
-	if (rf95.waitAvailableTimeout(3000)) {
+	if (rf95.waitAvailableTimeout(10)) {
 	// Should be a reply message for us now
 		if (rf95.recv(buf, &len)) {
 			return 1;
@@ -355,7 +412,7 @@ byte ReceiveRFData(void){
 		}
 	}
 	else {
-		Serial1.println("No reply from the node!");
+		//Serial1.println("No reply from the node!");
 		return 0;
 	}
 	delay(400);
@@ -389,7 +446,6 @@ void parseRF_data(){
       nodes_data[node_id].last_rssi = rf95.lastRssi();
       Serial1.print("LAST_RSSI : ");
       Serial1.println(nodes_data[node_id].last_rssi);
-
       // NTC_1
       float_array[3]=buf[4];
       float_array[2]=buf[5];
@@ -399,6 +455,7 @@ void parseRF_data(){
       nodes_data[node_id].temp[0]=t_1;
       Serial1.print("NTC_1 : ");
       Serial1.println(t_1,2);
+
       // NTC_2
       float_array[3]=buf[8];
       float_array[2]=buf[9];
@@ -458,6 +515,27 @@ void parseRF_data(){
       nodes_data[node_id].conductivite=conductivite;
       Serial1.print("CONDUCTIVITE : ");
       Serial1.println(conductivite,2);
+      Serial1.print("txpower : ");
+      Serial1.println(buf[32]);
+
+      lcd.setBacklight(255);lcd.home();lcd.clear();
+      sprintf(lcd_buffer, "RSSI: %d TXP: %d" ,nodes_data[node_id].last_rssi, buf[32]);
+      lcd.print(lcd_buffer);
+
+      lcd.setCursor(0,1);
+//      sprintf(lcd_buffer, "T_1: %d T_2: %d" ,(int)t_1, (int)t_2);
+//      lcd.print(lcd_buffer);
+      lcd.print("T1: ");lcd.print(t_1,2);lcd.print(" T2: "); lcd.print(t_2,2);
+
+      lcd.setCursor(0,2);
+//      sprintf(lcd_buffer, "T:%d H:%d: P:%d" ,(int)t_3, (int)h_1, (int)pression);
+//      lcd.print(lcd_buffer);
+      lcd.print("T3: ");lcd.print(t_3,2);lcd.print(" H1: ");lcd.print(h_1,2);
+
+      lcd.setCursor(0,3);
+  //    sprintf(lcd_buffer, "BATT_VOLTAGE : %d" ,(int)batt_voltage);
+//      lcd.print(lcd_buffer);
+      lcd.print("P:");lcd.print(pression,1);lcd.print(" batV:");lcd.print(batt_voltage,2);
 
     }
 
@@ -913,6 +991,14 @@ void SendLastRssi (byte node_address){
 	rf95.waitPacketSent();
 }
 
+void SendIncreasePower (byte node_address){
+	radiopacket[0]=FEATHER_MSG_HEADER;
+	radiopacket[1]=FEATHER_MSG_INCREASE_RF;
+	radiopacket[2]=node_address;
+	radiopacket[3]=FEATHER_MSG_END;
+	rf95.send((uint8_t *)radiopacket, 4);
+	rf95.waitPacketSent();
+}
 void SSR_ready_for_commands(byte node_address) {
 	radiopacket[0]=FEATHER_MSG_HEADER;
 	radiopacket[1]=FEATHER_MSG_READY_FOR_COMMANDS;
