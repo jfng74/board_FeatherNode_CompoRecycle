@@ -3,7 +3,7 @@
 #include <Wire.h>
 #include <DS3231.h>
 #include <RH_RF95.h>
-#include <LiquidCrystal_PCF8574.h>
+//#include <LiquidCrystal_PCF8574.h>
 #include <stdlib.h>
 #include "FanCompostMsg.h"
 
@@ -515,9 +515,10 @@ void parseRF_data(){
       SendSSRReady(buf[2]);
   }
 
-  else if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_CLOCK && Thebuf[2]==NODE_ADDR){
+  else if(buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SET_CLOCK && buf[2]==NODE_ADDR && buf[7]==FEATHER_MSG_END){
     Serial1.println("FEATHER_MSG_SET_CLOCK");
     uint32_t timeFromPC;
+    byte uint32_array[4];
     uint32_array[3]=buf[3];
     uint32_array[2]=buf[4];
     uint32_array[1]=buf[5];
