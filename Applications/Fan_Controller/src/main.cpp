@@ -465,7 +465,7 @@ void FanMotor(bool motor_state){
 }
 
 byte ReceiveRFData(void){
-	if (rf95.waitAvailableTimeout(10)) {
+	if (rf95.waitAvailableTimeout(100)) {
 	// Should be a reply message for us now
 		if (rf95.recv(buf, &len)) {
 			return 1;
@@ -488,11 +488,38 @@ void parseRF_data(){
   uint8_t node_id;
   uint16_t conductivite;
 	float t_1,t_2,t_3,h_1,batt_voltage,pression;
-
-	if (buf[0]==FEATHER_MSG_HEADER
+/*
+  Serial1.print("buf[0] : ");
+  Serial1.println(buf[0]);
+  Serial1.print("buf[1] : ");
+  Serial1.println(buf[1]);
+  Serial1.print("buf[2] : ");
+  Serial1.println(buf[2]);
+  Serial1.print("buf[3] : ");
+  Serial1.println(buf[3]);
+  Serial1.print("buf[4] : ");
+  Serial1.println(buf[4]);
+  Serial1.print("buf[5] : ");
+  Serial1.println(buf[5]);
+  Serial1.print("buf[6] : ");
+  Serial1.println(buf[6]);
+  Serial1.print("buf[7] : ");
+  Serial1.println(buf[7]);
+  Serial1.print("buf[8] : ");
+  Serial1.println(buf[8]);
+  Serial1.print("buf[9] : ");
+  Serial1.println(buf[9]);
+*/
+  if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_NODE_READY && buf[3] == FEATHER_MSG_END){
+      Serial1.println("FEATHER_MSG_NODE_READY");
+      SendSSRReady(buf[2]);
+  }
+  else if (buf[0]==FEATHER_MSG_HEADER
     && buf[1]==FEATHER_MSG_RESPONSE_ALL_DATA
     && buf[3]==READ_ALL_DATA ) {
       Serial1.println("parseRF_data : FEATHER_MSG_RESPONSE_ALL_DATA");
+      dt = clock.getDateTime();
+      Serial1.println(clock.dateFormat("d-m-Y H:i:s - l", dt));
       switch (buf[2]){
         case NODE_00:
         node_id = 0;
@@ -507,7 +534,7 @@ void parseRF_data(){
         node_id = 3;
         break;
       }
-
+      Serial1.print("Node ID : ");Serial1.println(node_id);
       nodes_data[node_id].last_rssi = rf95.lastRssi();
       Serial1.print("LAST_RSSI : ");
       Serial1.println(nodes_data[node_id].last_rssi);
@@ -602,13 +629,13 @@ void parseRF_data(){
 //      lcd.print("P:");lcd.print(pression,1);lcd.print(" batV:");lcd.print(batt_voltage,2);
 
     }
-
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SEND_ALL_TEMP
       && buf[2]==NODE_ADDR
       && buf[3]==SEND_ALL_TEMP
       && buf[4]==FEATHER_MSG_END) {
         Serial1.println("parseRF_data : FEATHER_MSG_RESPONSE_ALL_DATA");
+
         byte* float_array;
         radiopacket[0]=FEATHER_MSG_HEADER;
         radiopacket[1]=FEATHER_MSG_RESPONSE_DATA;
@@ -719,7 +746,6 @@ void parseRF_data(){
         rf95.send((uint8_t *)radiopacket, 76);
         rf95.waitPacketSent();
       }
-
       else if (buf[0]==FEATHER_MSG_HEADER
         && buf[1]==FEATHER_MSG_SET_DATA
         && buf[2]==NODE_ADDR
@@ -738,7 +764,6 @@ void parseRF_data(){
           Serial1.print("New setpoint: ");
           Serial1.println(setpoint);
     }
-
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SET_DATA
       && buf[2]==NODE_ADDR
@@ -748,9 +773,7 @@ void parseRF_data(){
         Serial1.print("New Delay Between Reads: ");
         Serial1.println(delay_minutes);
         writeEEPROM(disk1, 4, buf[4]);
-
     }
-
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_GET_DATA
       && buf[2]==NODE_ADDR
@@ -758,7 +781,6 @@ void parseRF_data(){
       && buf[4]==FEATHER_MSG_END) {
     	   SendSetpoint(NODE_ADDR);
     }
-
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_GET_DATA
       && buf[2]==NODE_ADDR
@@ -766,7 +788,6 @@ void parseRF_data(){
       && buf[4]==FEATHER_MSG_END) {
     	   SendBatVoltage(NODE_ADDR);
     }
-
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SET_DATA
       && buf[2]==NODE_ADDR
@@ -777,7 +798,6 @@ void parseRF_data(){
         relais_etat = 1;
         Serial1.println("Mode Manuel");
     }
-
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SET_DATA
       && buf[2]==NODE_ADDR
@@ -787,7 +807,6 @@ void parseRF_data(){
         Serial1.println("Mode Auto");
         relais_etat = 2;
     }
-
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SET_DATA
       && buf[2]==NODE_ADDR
@@ -798,7 +817,6 @@ void parseRF_data(){
         relais_etat = 0;
         Serial1.println("Mode Manuel");
     }
-
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_GET_DATA
       && buf[2]==NODE_ADDR
@@ -806,7 +824,6 @@ void parseRF_data(){
       && buf[4]==FEATHER_MSG_END) {
         SendRelayState(NODE_ADDR);
     }
-
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_GET_DATA
       && buf[2]==NODE_ADDR
@@ -814,252 +831,6 @@ void parseRF_data(){
       && buf[4]==FEATHER_MSG_END) {
     	   SendLastRssi(NODE_ADDR);
     }
-    else if (buf[0]==FEATHER_MSG_HEADER
-      && buf[1]==FEATHER_MSG_NODE_READY
-      && buf[2]==NODE_ADDR){
-    	   SendSSRReady(NODE_ADDR);
-       }
-    memset(buf,0,sizeof(buf));
-    len = RH_RF95_MAX_MESSAGE_LEN;
-}
-
-void parseRF_data(byte node_address)
-{
-	byte float_array[4];
-  byte uint16_array[2];
-
-	float t_1,t_2,t_3,h_1,batt_voltage,pression;
-  uint16_t conductivite;
-
-	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_RESPONSE_ALL_DATA && buf[2]==node_address && buf[3]==READ_ALL_DATA ) {
-		nodes_data[node_address].last_rssi = rf95.lastRssi();
-
-		float_array[3]=buf[4];
-		float_array[2]=buf[5];
-		float_array[1]=buf[6];
-		float_array[0]=buf[7];
-		memcpy(&t_1,&float_array,sizeof(t_1));
-		nodes_data[node_address].temp[0]=t_1;
-
-		float_array[3]=buf[8];
-		float_array[2]=buf[9];
-		float_array[1]=buf[10];
-		float_array[0]=buf[11];
-		memcpy(&t_2,&float_array,sizeof(t_2));
-		nodes_data[node_address].temp[1]=t_2;
-
-		float_array[3]=buf[12];
-		float_array[2]=buf[13];
-		float_array[1]=buf[14];
-		float_array[0]=buf[15];
-		memcpy(&t_3,&float_array,sizeof(t_3));
-		nodes_data[node_address].temp[2]=t_3;
-
-		float_array[3]=buf[16];
-		float_array[2]=buf[17];
-		float_array[1]=buf[18];
-		float_array[0]=buf[19];
-		memcpy(&h_1,&float_array,sizeof(h_1));
-		nodes_data[node_address].humidity_1=h_1;
-
-		float_array[3]=buf[20];
-		float_array[2]=buf[21];
-		float_array[1]=buf[22];
-		float_array[0]=buf[23];
-		memcpy(&batt_voltage,&float_array,sizeof(batt_voltage));
-		nodes_data[node_address].battery_voltage=batt_voltage;
-
-    float_array[3]=buf[24];
-		float_array[2]=buf[25];
-		float_array[1]=buf[26];
-		float_array[0]=buf[27];
-		memcpy(&pression,&float_array,sizeof(pression));
-		nodes_data[node_address].pression=pression;
-
-    uint16_array[1]=buf[28];
-    uint16_array[0]=buf[29];
-    memcpy(&conductivite,&uint16_array,sizeof(conductivite));
-		nodes_data[node_address].conductivite=conductivite;
-    nodes_data[i].txpower=buf[30];
-
-    nodes_data[i].new_data_received=true;
-
-	}
-
-	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SEND_ALL_TEMP && buf[2]==node_address && buf[3]==SEND_ALL_TEMP && buf[4]==FEATHER_MSG_END) {
-		byte* float_array;
-		radiopacket[0]=FEATHER_MSG_HEADER;
-		radiopacket[1]=FEATHER_MSG_RESPONSE_DATA;
-		radiopacket[2]=node_address;
-		radiopacket[3]=SEND_ALL_TEMP;
-		// Node 0
-		float_array = (byte*) &nodes_data[0].temp[TEMP_1];
-		radiopacket[4]= float_array[3];
-		radiopacket[5]= float_array[2];
-		radiopacket[6]= float_array[1];
-		radiopacket[7]= float_array[0];
-		float_array = (byte*) &nodes_data[0].temp[TEMP_2];
-		radiopacket[8]= float_array[3];
-		radiopacket[9]= float_array[2];
-		radiopacket[10]= float_array[1];
-		radiopacket[11]= float_array[0];
-		float_array = (byte*) &nodes_data[0].temp[TEMP_3];
-		radiopacket[12]= float_array[3];
-		radiopacket[13]= float_array[2];
-		radiopacket[14]= float_array[1];
-		radiopacket[15]= float_array[0];
-		float_array = (byte*) &nodes_data[0].humidity_1;
-		radiopacket[16]= float_array[3];
-		radiopacket[17]= float_array[2];
-		radiopacket[18]= float_array[1];
-		radiopacket[19]= float_array[0];
-		float_array = (byte*) &nodes_data[0].battery_voltage;
-		radiopacket[20]= float_array[3];
-		radiopacket[21]= float_array[2];
-		radiopacket[22]= float_array[1];
-		radiopacket[23]= float_array[0];
-		radiopacket[24]= nodes_data[0].last_rssi;
-		// Node 1
-		float_array = (byte*) &nodes_data[1].temp[TEMP_1];
-		radiopacket[25]= float_array[3];
-		radiopacket[26]= float_array[2];
-		radiopacket[27]= float_array[1];
-		radiopacket[28]= float_array[0];
-		float_array = (byte*) &nodes_data[1].temp[TEMP_2];
-		radiopacket[29]= float_array[3];
-		radiopacket[30]= float_array[2];
-		radiopacket[31]= float_array[1];
-		radiopacket[32]= float_array[0];
-		float_array = (byte*) &nodes_data[1].battery_voltage;
-		radiopacket[33]= float_array[3];
-		radiopacket[34]= float_array[2];
-		radiopacket[35]= float_array[1];
-		radiopacket[36]= float_array[0];
-		radiopacket[37]= nodes_data[1].last_rssi;
-		// Node 2
-		float_array = (byte*) &nodes_data[2].temp[TEMP_1];
-		radiopacket[38]= float_array[3];
-		radiopacket[39]= float_array[2];
-		radiopacket[40]= float_array[1];
-		radiopacket[41]= float_array[0];
-		float_array = (byte*) &nodes_data[2].temp[TEMP_2];
-		radiopacket[42]= float_array[3];
-		radiopacket[43]= float_array[2];
-		radiopacket[44]= float_array[1];
-		radiopacket[45]= float_array[0];
-		float_array = (byte*) &nodes_data[2].battery_voltage;
-		radiopacket[46]= float_array[3];
-		radiopacket[47]= float_array[2];
-		radiopacket[48]= float_array[1];
-		radiopacket[49]= float_array[0];
-		radiopacket[50]= nodes_data[2].last_rssi;
-		// Node 3
-		float_array = (byte*) &nodes_data[3].temp[TEMP_1];
-		radiopacket[51]= float_array[3];
-		radiopacket[52]= float_array[2];
-		radiopacket[53]= float_array[1];
-		radiopacket[54]= float_array[0];
-		float_array = (byte*) &nodes_data[3].temp[TEMP_2];
-		radiopacket[55]= float_array[3];
-		radiopacket[56]= float_array[2];
-		radiopacket[57]= float_array[1];
-		radiopacket[58]= float_array[0];
-		float_array = (byte*) &nodes_data[3].battery_voltage;
-		radiopacket[59]= float_array[3];
-		radiopacket[60]= float_array[2];
-		radiopacket[61]= float_array[1];
-		radiopacket[62]= float_array[0];
-		radiopacket[63]= nodes_data[3].last_rssi;
-		// Relais
-		// Etat du relais
-		radiopacket[64] = relais_etat;
-		// Temperature moyenne
-		float_array = (byte*) &t_avg;
-		radiopacket[65]= float_array[3];
-		radiopacket[66]= float_array[2];
-		radiopacket[67]= float_array[1];
-		radiopacket[68]= float_array[0];
-		// Temperature consigne
-		float_array = (byte*) &setpoint;
-		radiopacket[69]= float_array[3];
-		radiopacket[70]= float_array[2];
-		radiopacket[71]= float_array[1];
-		radiopacket[72]= float_array[0];
-		// Delais des prises de temperature
-		radiopacket[73] = delay_minutes;
-		// Mode
-		if(ModeAuto)
-			radiopacket[74] = 1;
-		else
-			radiopacket[74] = 0;
-		radiopacket[75]= FEATHER_MSG_END;
-
-		rf95.send((uint8_t *)radiopacket, 76);
-		rf95.waitPacketSent();
-	}
-
-	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SET_DATA && buf[2]==node_address && buf[3]==RELAY_THRESHOLD) {
-		float_array_t_consigne[3]=buf[4];
-		float_array_t_consigne[2]=buf[5];
-		float_array_t_consigne[1]=buf[6];
-		float_array_t_consigne[0]=buf[7];
-		writeEEPROM(disk1, 0, buf[7]);
-		writeEEPROM(disk1, 1, buf[6]);
-		writeEEPROM(disk1, 2, buf[5]);
-		writeEEPROM(disk1, 3, buf[4]);
-
-		memcpy(&t_consigne,&float_array_t_consigne,sizeof(t_consigne));
-		setpoint = t_consigne;
-		Serial1.print("New setpoint: ");
-		Serial1.println(setpoint);
-    }
-
-	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SET_DATA && buf[2]==node_address && buf[3]==DELAY_BETWEEN_READS && buf[5]==FEATHER_MSG_END)
-	{
-		delay_minutes = buf[4];
-
-		Serial1.print("New Delay Between Reads: ");
-		Serial1.println(delay_minutes);
-		writeEEPROM(disk1, 4, buf[4]);
-
-	}
-
-    if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_GET_DATA && buf[2]==node_address && buf[3]==RELAY_THRESHOLD && buf[4]==FEATHER_MSG_END) {
-    	SendSetpoint(NODE_ADDR);
-    }
-
-    if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_GET_DATA && buf[2]==node_address && buf[3]==READ_BATTERY_VOLTAGE && buf[4]==FEATHER_MSG_END) {
-    	SendBatVoltage(NODE_ADDR);
-    }
-
-	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SET_DATA && buf[2]==node_address && buf[3]==TURN_ON_RELAY && buf[4]==FEATHER_MSG_END)	{
-		FanMotor(true);
-		ModeAuto = false;
-		relais_etat = 1;
-		Serial1.println("Mode Manuel");
-	}
-
-    if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SET_DATA && buf[2]==node_address && buf[3]==MODE_AUTO && buf[4]==FEATHER_MSG_END) {
-		ModeAuto = true;
-		Serial1.println("Mode Auto");
-		relais_etat = 2;
-	}
-
-	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SET_DATA && buf[2]==node_address && buf[3]==TURN_OFF_RELAY && buf[4]==FEATHER_MSG_END) {
-		FanMotor(false);
-		ModeAuto = false;
-		relais_etat = 0;
-		Serial1.println("Mode Manuel");
-	}
-
-	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_GET_DATA && buf[2]==node_address && buf[3]==RELAY_STATE && buf[4]==FEATHER_MSG_END) {
-		SendRelayState(NODE_ADDR);
-	}
-
-    if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_GET_DATA && buf[2]==node_address && buf[3]==LAST_RSSI && buf[4]==FEATHER_MSG_END) {
-    	SendLastRssi(NODE_ADDR);
-    }
-
     memset(buf,0,sizeof(buf));
     len = RH_RF95_MAX_MESSAGE_LEN;
 }
