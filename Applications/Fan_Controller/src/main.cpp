@@ -8,6 +8,7 @@
 #include "FanCompostMsg.h"
 
 #define NB_NODES 4
+#define OPERATION_TIME 5
 #define MAX_ASK_ALL_DATA_RETRY 3
 #define DELAY_READY_FOR_COMMAND 15000
 
@@ -35,8 +36,8 @@ RTCDateTime dt;
 
 // Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
-LiquidCrystal_PCF8574 lcd(0x3f);
-char lcd_buffer[20];
+//LiquidCrystal_PCF8574 lcd(0x3f);
+//char lcd_buffer[20];
 
 
 struct node_data {
@@ -46,6 +47,8 @@ struct node_data {
   uint16_t conductivite;
   float battery_voltage;
   int8_t last_rssi;
+  uint8_t txpower;
+  bool new_data_received;
 };
 
 struct node_data nodes_data[4];
@@ -60,12 +63,13 @@ byte float_array_t_consigne[4];
 
 uint16_t delay_ready_for_command;
 
+
 uint8_t i;
 uint8_t ii;
 uint8_t nodes_list[NB_NODES] = {0,1,2,3};
 uint8_t nb_retry = 0;
 uint8_t relais_etat = 0;
-uint8_t DelayBetweenReads = 1;
+uint8_t delay_minutes=1;
 unsigned int eeprom_address = 0;
 
 char radiopacket[76];
@@ -109,21 +113,35 @@ void SendSetpoint (byte node_address);
 void SendBatVoltage(byte node_address);
 void SendRelayState(byte node_address);
 void SendIncreasePower (byte node_address);
+void SendSSRReady(byte node_adress);
+
 
 void setup() {
   // Initialisation du port serie a 9600 baud
 	Serial1.begin(9600);
   Serial1.println("Debut Setup");
 
-  lcd.begin(20,4);
+//  lcd.begin(20,4);
 
 
+/*
   Serial1.println("clock.begin");
   clock.begin();
   Serial1.println("clock.setAlarm1");
-  clock.setAlarm1(0, 0, 0, 5, DS3231_MATCH_S,true);
+  clock.setAlarm1(0, 0, 0, 5, DS3231_MATCH_M_S,true);
   dt = clock.getDateTime();
   Serial.println(clock.dateFormat("d-m-Y H:i:s - l", dt));
+*/
+
+  clock.begin();
+  dt = clock.getDateTime();
+  clock.setBattery(true,false);
+  clock.enableOutput(false);
+  //  Serial1.println("clock.setAlarm1");
+  uint8_t minutes_alarme = dt.minute + delay_minutes;
+  if(minutes_alarme >59)
+    minutes_alarme = minutes_alarme - 60;
+    clock.setAlarm1(0, 0, minutes_alarme, (OPERATION_TIME * NB_NODES)+5, DS3231_MATCH_M_S,true);
 
 	// Initialisation du delais d'attente pour envoyer un ready for command
 	delay_ready_for_command = 0;
@@ -166,7 +184,7 @@ void setup() {
 	// analogReference(AR_EXTERNAL);
 
 	setpoint = 20;
-	DelayBetweenReads = 1;
+	delay_minutes = 1;
 
 
 	// Initialisation des valeurs a partir du EEPROM
@@ -191,22 +209,64 @@ void setup() {
 		setpoint = t_consigne;
 		Serial1.print("New setpoint: ");
 		Serial1.println(setpoint);
-		DelayBetweenReads = readEEPROM(disk1, 4);
+		delay_minutes = readEEPROM(disk1, 4);
 	}
 
   Serial1.println("Fin Setup");
 }
 
 void loop() {
-  int reading;
-
   //Serial1.println("Debut Loop");
-	i=0;
-	t_avg=0;
-	clear_nodes_data();
+  uint8_t i_node=0;
+
+
   if(ReceiveRFData()){
     parseRF_data();
   }
+  if(clock.isAlarm1(true)){
+    Serial1.println("Alarm1 true : calcule moyenne");
+    i=0;
+    t_avg=0;
+    for(i_node=0;i_node<NB_NODES;i_node++){
+      if(nodes_data[i].new_data_received){
+        temp_avg[i++] = nodes_data[i_node].temp[0];
+        temp_avg[i++] = nodes_data[i_node].temp[1];
+      }
+    }
+    for(int j=0;j<i;j++){
+      t_avg += temp_avg[j];
+    }
+
+    t_avg = t_avg / i;
+
+    Serial1.print("t_avg : ");Serial1.println(t_avg);
+
+    // Active ou desactive le SSR
+    if ((setpoint <= t_avg) && (ModeAuto))
+    {
+      FanMotor(true);
+      relais_etat = 1;
+    }
+
+    else if ((setpoint > t_avg) && (ModeAuto))
+    {
+      FanMotor(false);
+      relais_etat = 0;
+    }
+    clear_nodes_data();
+    // //  Serial1.println("clock.begin");
+      dt = clock.getDateTime();
+//      clock.setBattery(true,false);
+//      clock.enableOutput(false);
+    //  Serial1.println("clock.setAlarm1");
+      uint8_t minutes_alarme = dt.minute + delay_minutes;
+      if(minutes_alarme >59)
+        minutes_alarme = minutes_alarme - 60;
+      clock.setAlarm1(0, 0, minutes_alarme, (OPERATION_TIME * NB_NODES) + 5, DS3231_MATCH_M_S,true);
+
+  }
+/*
+  int reading;
   reading = digitalRead(buttonPin);
 
   if (reading != lastButtonState) {
@@ -237,8 +297,7 @@ void loop() {
   // save the reading.  Next time through the loop,
   // it'll be the lastButtonState:
   lastButtonState = reading;
-
-
+*/
 
 /*
 
@@ -380,6 +439,10 @@ void clear_nodes_data(void){
 		nodes_data[i].humidity_1=0;
 		nodes_data[i].battery_voltage=0;
 		nodes_data[i].last_rssi=0;
+    nodes_data[i].conductivite=0;
+    nodes_data[i].pression=0;
+    nodes_data[i].txpower=0;
+    nodes_data[i].new_data_received=false;
 	}
 }
 
@@ -421,8 +484,10 @@ byte ReceiveRFData(void){
 
 void parseRF_data(){
   byte float_array[4];
+  byte uint16_array[2];
   uint8_t node_id;
-	float t_1,t_2,t_3,h_1,batt_voltage,pression,conductivite;
+  uint16_t conductivite;
+	float t_1,t_2,t_3,h_1,batt_voltage,pression;
 
 	if (buf[0]==FEATHER_MSG_HEADER
     && buf[1]==FEATHER_MSG_RESPONSE_ALL_DATA
@@ -507,39 +572,38 @@ void parseRF_data(){
       Serial1.println(pression,2);
 
       // CONDUCTIVITE
-      float_array[3]=buf[28];
-      float_array[2]=buf[29];
-      float_array[1]=buf[30];
-      float_array[0]=buf[31];
-      memcpy(&conductivite,&float_array,sizeof(conductivite));
+      uint16_array[1]=buf[28];
+      uint16_array[0]=buf[29];
+      memcpy(&conductivite,&uint16_array,sizeof(conductivite));
+
       nodes_data[node_id].conductivite=conductivite;
       Serial1.print("CONDUCTIVITE : ");
-      Serial1.println(conductivite,2);
+      Serial1.println(conductivite);
       Serial1.print("txpower : ");
-      Serial1.println(buf[32]);
+      Serial1.println(buf[30]);
 
-      lcd.setBacklight(255);lcd.home();lcd.clear();
-      sprintf(lcd_buffer, "RSSI: %d TXP: %d" ,nodes_data[node_id].last_rssi, buf[32]);
-      lcd.print(lcd_buffer);
+//      lcd.setBacklight(255);lcd.home();lcd.clear();
+//      sprintf(lcd_buffer, "RSSI: %d TXP: %d" ,nodes_data[node_id].last_rssi, buf[32]);
+//      lcd.print(lcd_buffer);
 
-      lcd.setCursor(0,1);
+//      lcd.setCursor(0,1);
 //      sprintf(lcd_buffer, "T_1: %d T_2: %d" ,(int)t_1, (int)t_2);
 //      lcd.print(lcd_buffer);
-      lcd.print("T1: ");lcd.print(t_1,2);lcd.print(" T2: "); lcd.print(t_2,2);
+//      lcd.print("T1: ");lcd.print(t_1,2);lcd.print(" T2: "); lcd.print(t_2,2);
 
-      lcd.setCursor(0,2);
+//      lcd.setCursor(0,2);
 //      sprintf(lcd_buffer, "T:%d H:%d: P:%d" ,(int)t_3, (int)h_1, (int)pression);
 //      lcd.print(lcd_buffer);
-      lcd.print("T3: ");lcd.print(t_3,2);lcd.print(" H1: ");lcd.print(h_1,2);
+//      lcd.print("T3: ");lcd.print(t_3,2);lcd.print(" H1: ");lcd.print(h_1,2);
 
-      lcd.setCursor(0,3);
+//      lcd.setCursor(0,3);
   //    sprintf(lcd_buffer, "BATT_VOLTAGE : %d" ,(int)batt_voltage);
 //      lcd.print(lcd_buffer);
-      lcd.print("P:");lcd.print(pression,1);lcd.print(" batV:");lcd.print(batt_voltage,2);
+//      lcd.print("P:");lcd.print(pression,1);lcd.print(" batV:");lcd.print(batt_voltage,2);
 
     }
 
-    if (buf[0]==FEATHER_MSG_HEADER
+    else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SEND_ALL_TEMP
       && buf[2]==NODE_ADDR
       && buf[3]==SEND_ALL_TEMP
@@ -644,7 +708,7 @@ void parseRF_data(){
         radiopacket[71]= float_array[1];
         radiopacket[72]= float_array[0];
         // Delais des prises de temperature
-        radiopacket[73] = DelayBetweenReads;
+        radiopacket[73] = delay_minutes;
         // Mode
         if(ModeAuto)
           radiopacket[74] = 1;
@@ -656,7 +720,7 @@ void parseRF_data(){
         rf95.waitPacketSent();
       }
 
-      if (buf[0]==FEATHER_MSG_HEADER
+      else if (buf[0]==FEATHER_MSG_HEADER
         && buf[1]==FEATHER_MSG_SET_DATA
         && buf[2]==NODE_ADDR
         && buf[3]==RELAY_THRESHOLD) {
@@ -675,18 +739,19 @@ void parseRF_data(){
           Serial1.println(setpoint);
     }
 
-    if (buf[0]==FEATHER_MSG_HEADER
+    else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SET_DATA
       && buf[2]==NODE_ADDR
       && buf[3]==DELAY_BETWEEN_READS
       && buf[5]==FEATHER_MSG_END){
-        DelayBetweenReads = buf[4];
+        delay_minutes = buf[4];
         Serial1.print("New Delay Between Reads: ");
-        Serial1.println(DelayBetweenReads);
+        Serial1.println(delay_minutes);
         writeEEPROM(disk1, 4, buf[4]);
+
     }
 
-    if (buf[0]==FEATHER_MSG_HEADER
+    else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_GET_DATA
       && buf[2]==NODE_ADDR
       && buf[3]==RELAY_THRESHOLD
@@ -694,7 +759,7 @@ void parseRF_data(){
     	   SendSetpoint(NODE_ADDR);
     }
 
-    if (buf[0]==FEATHER_MSG_HEADER
+    else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_GET_DATA
       && buf[2]==NODE_ADDR
       && buf[3]==READ_BATTERY_VOLTAGE
@@ -702,7 +767,7 @@ void parseRF_data(){
     	   SendBatVoltage(NODE_ADDR);
     }
 
-    if (buf[0]==FEATHER_MSG_HEADER
+    else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SET_DATA
       && buf[2]==NODE_ADDR
       && buf[3]==TURN_ON_RELAY
@@ -713,7 +778,7 @@ void parseRF_data(){
         Serial1.println("Mode Manuel");
     }
 
-    if (buf[0]==FEATHER_MSG_HEADER
+    else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SET_DATA
       && buf[2]==NODE_ADDR
       && buf[3]==MODE_AUTO
@@ -723,7 +788,7 @@ void parseRF_data(){
         relais_etat = 2;
     }
 
-    if (buf[0]==FEATHER_MSG_HEADER
+    else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SET_DATA
       && buf[2]==NODE_ADDR
       && buf[3]==TURN_OFF_RELAY
@@ -734,7 +799,7 @@ void parseRF_data(){
         Serial1.println("Mode Manuel");
     }
 
-    if (buf[0]==FEATHER_MSG_HEADER
+    else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_GET_DATA
       && buf[2]==NODE_ADDR
       && buf[3]==RELAY_STATE
@@ -742,14 +807,18 @@ void parseRF_data(){
         SendRelayState(NODE_ADDR);
     }
 
-    if (buf[0]==FEATHER_MSG_HEADER
+    else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_GET_DATA
       && buf[2]==NODE_ADDR
       && buf[3]==LAST_RSSI
       && buf[4]==FEATHER_MSG_END) {
     	   SendLastRssi(NODE_ADDR);
     }
-
+    else if (buf[0]==FEATHER_MSG_HEADER
+      && buf[1]==FEATHER_MSG_NODE_READY
+      && buf[2]==NODE_ADDR){
+    	   SendSSRReady(NODE_ADDR);
+       }
     memset(buf,0,sizeof(buf));
     len = RH_RF95_MAX_MESSAGE_LEN;
 }
@@ -757,8 +826,10 @@ void parseRF_data(){
 void parseRF_data(byte node_address)
 {
 	byte float_array[4];
+  byte uint16_array[2];
 
-	float t_1,t_2,t_3,h_1,batt_voltage;
+	float t_1,t_2,t_3,h_1,batt_voltage,pression;
+  uint16_t conductivite;
 
 	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_RESPONSE_ALL_DATA && buf[2]==node_address && buf[3]==READ_ALL_DATA ) {
 		nodes_data[node_address].last_rssi = rf95.lastRssi();
@@ -797,6 +868,22 @@ void parseRF_data(byte node_address)
 		float_array[0]=buf[23];
 		memcpy(&batt_voltage,&float_array,sizeof(batt_voltage));
 		nodes_data[node_address].battery_voltage=batt_voltage;
+
+    float_array[3]=buf[24];
+		float_array[2]=buf[25];
+		float_array[1]=buf[26];
+		float_array[0]=buf[27];
+		memcpy(&pression,&float_array,sizeof(pression));
+		nodes_data[node_address].pression=pression;
+
+    uint16_array[1]=buf[28];
+    uint16_array[0]=buf[29];
+    memcpy(&conductivite,&uint16_array,sizeof(conductivite));
+		nodes_data[node_address].conductivite=conductivite;
+    nodes_data[i].txpower=buf[30];
+
+    nodes_data[i].new_data_received=true;
+
 	}
 
 	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SEND_ALL_TEMP && buf[2]==node_address && buf[3]==SEND_ALL_TEMP && buf[4]==FEATHER_MSG_END) {
@@ -899,7 +986,7 @@ void parseRF_data(byte node_address)
 		radiopacket[71]= float_array[1];
 		radiopacket[72]= float_array[0];
 		// Delais des prises de temperature
-		radiopacket[73] = DelayBetweenReads;
+		radiopacket[73] = delay_minutes;
 		// Mode
 		if(ModeAuto)
 			radiopacket[74] = 1;
@@ -929,10 +1016,10 @@ void parseRF_data(byte node_address)
 
 	if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SET_DATA && buf[2]==node_address && buf[3]==DELAY_BETWEEN_READS && buf[5]==FEATHER_MSG_END)
 	{
-		DelayBetweenReads = buf[4];
+		delay_minutes = buf[4];
 
 		Serial1.print("New Delay Between Reads: ");
-		Serial1.println(DelayBetweenReads);
+		Serial1.println(delay_minutes);
 		writeEEPROM(disk1, 4, buf[4]);
 
 	}
@@ -1090,6 +1177,17 @@ void SetNodesToSleep(byte timetowake) {
 	radiopacket[3]=FEATHER_MSG_END;
 	rf95.send((uint8_t *)radiopacket, 4);
 	rf95.waitPacketSent();
+}
+
+void SendSSRReady(byte node_adress){
+  radiopacket[0]=FEATHER_MSG_HEADER;
+	radiopacket[1]=FEATHER_MSG_SSR_READY;
+	radiopacket[2]=node_adress;
+  radiopacket[3]=delay_minutes;
+	radiopacket[4]=FEATHER_MSG_END;
+	rf95.send((uint8_t *)radiopacket, 5);
+	rf95.waitPacketSent();
+
 }
 
 void print2digits(int number) {
