@@ -351,29 +351,6 @@ void NodeFeatherCompost::blink_led(uint8_t nb_flash, uint32_t delais){
 void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
   byte uint32_array[4];
   Serial1.println("*******************************");
-/*
-  Serial1.print("Thebuf[0] : ");
-  Serial1.println(Thebuf[0]);
-  Serial1.print("Thebuf[1] : ");
-  Serial1.println(Thebuf[1]);
-  Serial1.print("Thebuf[2] : ");
-  Serial1.println(Thebuf[2]);
-  Serial1.print("Thebuf[3] : ");
-  Serial1.println(Thebuf[3]);
-  Serial1.print("Thebuf[4] : ");
-  Serial1.println(Thebuf[4]);
-  Serial1.print("Thebuf[5] : ");
-  Serial1.println(Thebuf[5]);
-  Serial1.print("Thebuf[6] : ");
-  Serial1.println(Thebuf[6]);
-  Serial1.print("Thebuf[7] : ");
-  Serial1.println(Thebuf[7]);
-  Serial1.print("Thebuf[8] : ");
-  Serial1.println(Thebuf[8]);
-  Serial1.print("Thebuf[9] : ");
-  Serial1.println(Thebuf[9]);
-*/
-
 
 
 	if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_NODE_DELAY && Thebuf[2]==NODE_ADDR){
@@ -389,7 +366,6 @@ void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
     uint32_array[0]=buf[6];
     memcpy(&timeFromPC,&uint32_array,sizeof(timeFromPC));
     Serial1.print("timeFromPC : ");Serial1.println(timeFromPC);
-    clock.begin();
     clock.setDateTime(timeFromPC);
     dt = clock.getDateTime();
     Serial1.println(clock.dateFormat("d-m-Y H:i:s",dt));
@@ -402,12 +378,7 @@ void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
       writeEEPROM(disk1, 4, delay_minutes); // delais entre les lectures = 1 minute
     }
   }
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_INCREASE_RF && Thebuf[2]==NODE_ADDR && Thebuf[3]==FEATHER_MSG_END)
+  else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_INCREASE_RF && Thebuf[2]==NODE_ADDR && Thebuf[3]==FEATHER_MSG_END)
      {
        txpower++;
        if (txpower>23)
@@ -417,9 +388,7 @@ void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
       Serial1.println(txpower);
 
       }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-          else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_DECREASE_RF && Thebuf[2]==NODE_ADDR && Thebuf[3]==FEATHER_MSG_END)
+  else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_DECREASE_RF && Thebuf[2]==NODE_ADDR && Thebuf[3]==FEATHER_MSG_END)
            {
              txpower--;
              if (txpower<5)
@@ -429,7 +398,6 @@ void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
             Serial1.println(txpower);
 
             }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  }
  byte NodeFeatherCompost::ReceiveRFData(void){
