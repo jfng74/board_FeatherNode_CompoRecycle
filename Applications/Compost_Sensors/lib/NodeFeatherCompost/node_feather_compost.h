@@ -41,6 +41,9 @@ private:
   DS3231 clock;
   RTCDateTime dt;
 
+  void writeEEPROM(int deviceaddress, unsigned int eeaddress, byte data );
+  byte readEEPROM(int deviceaddress, unsigned int eeaddress );
+
   float read_batt_voltage(void);
   float read_temp(uint8_t analog_pin);
   uint16_t read_conductivite(uint8_t analog_pin);

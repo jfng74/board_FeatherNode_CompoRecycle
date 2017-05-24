@@ -9,6 +9,9 @@
 // Change to 434.0 or other frequency, must match RX's freq!
 #define RF95_FREQ 433.0
 
+//EPROM
+#define disk1 0x50
+
 // RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
 NodeFeatherCompost::NodeFeatherCompost(){
@@ -19,6 +22,7 @@ NodeFeatherCompost::NodeFeatherCompost(){
 
   // Initialisation du port serie a 9600 baud
   Serial1.begin(9600);
+  Serial1.println("################################");
   Serial1.println("Initialisation");
   rf95 = new RH_RF95(RFM95_CS, RFM95_INT);
 
@@ -70,12 +74,27 @@ NodeFeatherCompost::NodeFeatherCompost(){
 	// If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then
 	// you can set transmitter powers from 5 to 23 dBm:
 	rf95->setTxPower(txpower, false);
+
+  // Initialisation des valeurs a partir du EEPROM
+
+	if (readEEPROM(disk1, 4) == 255)
+		{
+		Serial1.println("eprom not initialized!");
+		// setpoint 22c = 65,176,0,0;
+		writeEEPROM(disk1, 4, delay_minutes); // delais entre les lectures = 1 minute
+
+	}
+	else {
+		delay_minutes = readEEPROM(disk1, 4);
+    Serial1.print("eprom read delay_minutes : "); Serial1.println(delay_minutes);
+	}
+
   Serial1.println("Fin initialisation");
 }
 
 void NodeFeatherCompost::loop(void){
 
-  Serial1.println("Debut Loop");
+  Serial1.println("Lecture des valeurs");
   ntc_1 = read_temp(NTC_1);
   ntc_2 = read_temp(NTC_2);
   batt_voltage = read_batt_voltage();
@@ -91,10 +110,12 @@ void NodeFeatherCompost::loop(void){
   }
   conductivite = read_conductivite(A3);
 
+  Serial1.println("send_node_ready");
   send_node_ready();
   if(ReceiveRFData()){
       parse_data(buf);  //  Check et envoie les donnees
   }
+  Serial1.println("send_all_data");
   send_all_data();
 
 
@@ -134,7 +155,7 @@ void NodeFeatherCompost::loop(void){
   */
 //    delay(1000);
   power_off();
-   Serial1.println("Fin Loop");
+  delay(2000);
 }
 
 void NodeFeatherCompost::send_batt_voltage(void){
@@ -183,6 +204,9 @@ void NodeFeatherCompost::send_all_data(void){
   byte* float_array_batt_voltage;
 	float_array_batt_voltage = (byte*) &batt_voltage;
 
+  Serial1.print("Conductivite : ");Serial1.println(conductivite);
+
+
 	radiopacket[0]=FEATHER_MSG_HEADER;
 	radiopacket[1]=FEATHER_MSG_RESPONSE_ALL_DATA;
 	radiopacket[2]=NODE_ADDR;
@@ -227,6 +251,8 @@ void NodeFeatherCompost::send_all_data(void){
   //Conductivite
   radiopacket[28]= uint16_array_conductivite[1];
 	radiopacket[29]= uint16_array_conductivite[0];
+
+  //TX Power
   radiopacket[30]= txpower;
 
 	radiopacket[31]= FEATHER_MSG_END;
@@ -323,38 +349,13 @@ void NodeFeatherCompost::blink_led(uint8_t nb_flash, uint32_t delais){
 
 void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
   byte uint32_array[4];
-/*
 
-	if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_GET_ALL_DATA && Thebuf[2]==NODE_ADDR && Thebuf[3]==READ_ALL_DATA) {
-		Serial1.println("sendAll");
-		send_all_data();
-	    //blink_led(2,100);
-	    blink_led(2,100);
-	}
-
-	else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_REQUEST_ALL_NODE_SLEEP) {
-		rtc.setTime(0,0,0);
-	    rtc.setAlarmTime(0,Thebuf[2],0);
-	    rtc.enableAlarm(rtc.MATCH_HHMMSS);
-	    //rtc.attachInterrupt();
-	    if(rf95->sleep()){
-	    	blink_led(Thebuf[2],100);
-	    }
-	    rtc.standbyMode();
-	}
-  */
-/*
-	else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_QUERY_DATA && Thebuf[2]==NODE_ADDR && Thebuf[3]==TEMP_1) {
-		send_temp(THERMISTORPIN_A0);
-		Serial1.println("Send temp 1");
-
-    }
-    */
 	if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_NODE_DELAY && Thebuf[2]==NODE_ADDR){
 		delay_minutes = Thebuf[3];
-		Serial1.println("Set new delay minute");
+		Serial1.print("Set new delay minute : ");Serial1.println(delay_minutes);
     }
   else if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_CLOCK && Thebuf[2]==NODE_ADDR){
+    Serial1.println("FEATHER_MSG_SET_CLOCK");
     uint32_t timeFromPC;
     uint32_array[3]=buf[3];
     uint32_array[2]=buf[4];
@@ -366,6 +367,14 @@ void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
     clock.setDateTime(timeFromPC);
     dt = clock.getDateTime();
     Serial1.println(clock.dateFormat("d-m-Y H:i:s",dt));
+  }
+  else if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SSR_READY && Thebuf[2]==NODE_ADDR){
+    Serial1.println("FEATHER_MSG_SSR_READY");
+    if(Thebuf[3]!= delay_minutes){
+      Serial1.println("FEATHER_MSG_SSR_READY : setting delay_minutes");
+      delay_minutes = Thebuf[3];
+      writeEEPROM(disk1, 4, delay_minutes); // delais entre les lectures = 1 minute
+    }
   }
 
 
@@ -441,4 +450,29 @@ void NodeFeatherCompost::send_node_ready(void){
   rf95->send((uint8_t *)radiopacket, 4);
   rf95->waitPacketSent();
 
+}
+
+void NodeFeatherCompost::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte data ){
+  Wire.beginTransmission(deviceaddress);
+  Wire.write((int)(eeaddress >> 8));   // MSB
+  Wire.write((int)(eeaddress & 0xFF)); // LSB
+  Wire.write(data);
+  Wire.endTransmission();
+
+  delay(5);
+}
+
+byte NodeFeatherCompost::readEEPROM(int deviceaddress, unsigned int eeaddress ){
+  byte rdata = 0xFF;
+
+  Wire.beginTransmission(deviceaddress);
+  Wire.write((int)(eeaddress >> 8));   // MSB
+  Wire.write((int)(eeaddress & 0xFF)); // LSB
+  Wire.endTransmission();
+
+  Wire.requestFrom(deviceaddress,1);
+
+  if (Wire.available()) rdata = Wire.read();
+
+  return rdata;
 }
