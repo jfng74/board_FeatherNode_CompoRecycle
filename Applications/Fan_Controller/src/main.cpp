@@ -49,6 +49,7 @@ struct node_data {
   int8_t last_rssi;
   uint8_t txpower;
   bool new_data_received;
+  bool clock_ok=false;
 };
 
 struct node_data nodes_data[4];
@@ -114,8 +115,8 @@ void SendBatVoltage(byte node_address);
 void SendRelayState(byte node_address);
 void SendIncreasePower (byte node_address);
 void SendSSRReady(byte node_adress);
-
-
+void SendSetDateTime(byte node_adress);
+uint8_t getNodeID(uint8_t node_adress);
 void setup() {
   // Initialisation du port serie a 9600 baud
 	Serial1.begin(9600);
@@ -229,6 +230,7 @@ void loop() {
     t_avg=0;
     for(i_node=0;i_node<NB_NODES;i_node++){
       if(nodes_data[i].new_data_received){
+//        Serial1.println("new_data_received");
         temp_avg[i++] = nodes_data[i_node].temp[0];
         temp_avg[i++] = nodes_data[i_node].temp[1];
       }
@@ -510,9 +512,14 @@ void parseRF_data(){
   Serial1.print("buf[9] : ");
   Serial1.println(buf[9]);
 */
-  if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_NODE_READY && buf[3] == FEATHER_MSG_END){
+  if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_NODE_READY && buf[4] == FEATHER_MSG_END){
       Serial1.println("FEATHER_MSG_NODE_READY");
-      SendSSRReady(buf[2]);
+      if(!nodes_data[getNodeID(buf[2])].clock_ok){
+        SendSetDateTime(buf[2]);
+        nodes_data[getNodeID(buf[2])].clock_ok=true;
+      }
+      else
+        SendSSRReady(buf[2]);
   }
 
   else if(buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_SET_CLOCK && buf[2]==NODE_ADDR && buf[7]==FEATHER_MSG_END){
@@ -536,20 +543,9 @@ void parseRF_data(){
       Serial1.println("parseRF_data : FEATHER_MSG_RESPONSE_ALL_DATA");
       dt = clock.getDateTime();
       Serial1.println(clock.dateFormat("d-m-Y H:i:s - l", dt));
-      switch (buf[2]){
-        case NODE_00:
-        node_id = 0;
-        break;
-        case NODE_01:
-        node_id = 1;
-        break;
-        case NODE_02:
-        node_id = 2;
-        break;
-        case NODE_03:
-        node_id = 3;
-        break;
-      }
+
+      node_id = getNodeID(buf[2]);
+
       Serial1.print("Node ID : ");Serial1.println(node_id);
       nodes_data[node_id].last_rssi = rf95.lastRssi();
       Serial1.print("LAST_RSSI : ");
@@ -620,11 +616,17 @@ void parseRF_data(){
       memcpy(&conductivite,&uint16_array,sizeof(conductivite));
 
       nodes_data[node_id].conductivite=conductivite;
+
       Serial1.print("CONDUCTIVITE : ");
       Serial1.println(conductivite);
+
+      //TX Power
+
+      nodes_data[node_id].txpower=buf[30];
       Serial1.print("txpower : ");
       Serial1.println(buf[30]);
 
+      nodes_data[node_id].new_data_received=true;
 //      lcd.setBacklight(255);lcd.home();lcd.clear();
 //      sprintf(lcd_buffer, "RSSI: %d TXP: %d" ,nodes_data[node_id].last_rssi, buf[32]);
 //      lcd.print(lcd_buffer);
@@ -977,6 +979,25 @@ void SendSSRReady(byte node_adress){
 
 }
 
+void SendSetDateTime(byte node_adress){
+  radiopacket[0]=FEATHER_MSG_HEADER;
+	radiopacket[1]=FEATHER_MSG_SET_CLOCK;
+	radiopacket[2]=node_adress;
+
+  dt=clock.getDateTime();
+  byte* uint32_array;
+  uint32_array = (byte*) &dt.unixtime;
+
+  radiopacket[3]= uint32_array[3];
+  radiopacket[4]= uint32_array[2];
+  radiopacket[5]= uint32_array[1];
+  radiopacket[6]= uint32_array[0];
+	radiopacket[7]=FEATHER_MSG_END;
+	rf95.send((uint8_t *)radiopacket, 8);
+	rf95.waitPacketSent();
+
+}
+
 void print2digits(int number) {
 	if (number < 10) {
 		Serial1.print("0"); // print a 0 before if the number is < than 10
@@ -993,6 +1014,24 @@ void writeEEPROM(int deviceaddress, unsigned int eeaddress, byte data )
   Wire.endTransmission();
 
   delay(5);
+}
+uint8_t getNodeID(uint8_t node_adress){
+  uint8_t node_id;
+  switch (buf[2]){
+    case NODE_00:
+    node_id = 0;
+    break;
+    case NODE_01:
+    node_id = 1;
+    break;
+    case NODE_02:
+    node_id = 2;
+    break;
+    case NODE_03:
+    node_id = 3;
+    break;
+  }
+  return node_id;
 }
 
 byte readEEPROM(int deviceaddress, unsigned int eeaddress )
