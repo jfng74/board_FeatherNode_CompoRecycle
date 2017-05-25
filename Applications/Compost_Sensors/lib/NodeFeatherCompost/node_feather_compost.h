@@ -48,6 +48,7 @@ private:
   float read_temp(uint8_t analog_pin);
   uint16_t read_conductivite(uint8_t analog_pin);
   byte ReceiveRFData(void);
+  bool clock_ok;
   bool htu_ok;
   bool bme_ok;
   RTCZero rtc;

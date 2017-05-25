@@ -3,7 +3,7 @@
 #include "FanCompostMsg.h"
 
 // Node Address
-#define NODE_ADDR 0x00
+#define NODE_ADDR 0x02
 #define OPERATION_TIME 5
 //RFM variables
 // Change to 434.0 or other frequency, must match RX's freq!
@@ -17,6 +17,7 @@
 NodeFeatherCompost::NodeFeatherCompost(){
   htu_ok = false;
   bme_ok = false;
+  clock_ok = false;
   txpower = 5;
   delay_minutes = 1;
 
@@ -369,6 +370,7 @@ void NodeFeatherCompost::parse_data(uint8_t Thebuf[]){
     clock.setDateTime(timeFromPC);
     dt = clock.getDateTime();
     Serial1.println(clock.dateFormat("d-m-Y H:i:s",dt));
+    clock_ok = true;
   }
   else if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SSR_READY && Thebuf[2]==NODE_ADDR){
     Serial1.println("FEATHER_MSG_SSR_READY");
@@ -441,9 +443,9 @@ void NodeFeatherCompost::send_node_ready(void){
   radiopacket[0]=FEATHER_MSG_HEADER;
 	radiopacket[1]=FEATHER_MSG_NODE_READY;
 	radiopacket[2]=NODE_ADDR;
-  radiopacket[3]= FEATHER_MSG_END;
+  radiopacket[4]= FEATHER_MSG_END;
 
-  rf95->send((uint8_t *)radiopacket, 4);
+  rf95->send((uint8_t *)radiopacket, 5);
   rf95->waitPacketSent();
 
 }
