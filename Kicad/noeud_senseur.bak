@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:noeud_senseur-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -35,9 +36,9 @@ EELAYER END
 $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 5
-Title ""
-Date "2017-02-23"
-Rev ""
+Title "Noeud Senseur"
+Date "2017-06-06"
+Rev "1.1"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -113,17 +114,6 @@ F 3 "" H -4400 -1100 50  0001 C CNN
 $EndComp
 Text Label 1750 2200 0    60   ~ 0
 A3
-$Comp
-L DS18B20 U2
-U 1 1 5890D83B
-P 5825 5775
-F 0 "U2" H 5675 6025 50  0000 L CNN
-F 1 "DS18B20" H 5650 5500 50  0000 L CNN
-F 2 "TO_SOT_Packages_THT:TO-92_Inline_Wide" H 2050 -500 50  0001 C CNN
-F 3 "" H 2050 -500 50  0001 C CNN
-	1    5825 5775
-	1    0    0    -1  
-$EndComp
 Text Label 4125 2800 2    60   ~ 0
 1_WIRE_IO
 Text Label 4250 5775 0    60   ~ 0
@@ -317,7 +307,7 @@ Text Label 4125 2700 2    60   ~ 0
 MCP2515_INT
 NoConn ~ 3450 1900
 $Comp
-L FEATHER_MO_LORA Adafruit_Feather-1
+L FEATHER_MO_LORA-RESCUE-noeud_senseur Adafruit_Feather-1
 U 1 1 58A7C9E5
 P 2800 2400
 F 0 "Adafruit_Feather-1" H 2787 3687 60  0000 C CNN
@@ -352,23 +342,23 @@ $EndComp
 $Comp
 L ORD211-1015 S1
 U 1 1 58AD8EEB
-P 5375 1900
-F 0 "S1" V 5322 1988 60  0000 L CNN
-F 1 "ORD211-1015" V 5428 1988 60  0000 L CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm" H 1225 -2150 60  0001 C CNN
-F 3 "" H 1225 -2150 60  0001 C CNN
-	1    5375 1900
+P 5775 1900
+F 0 "S1" V 5722 1988 60  0000 L CNN
+F 1 "ORD211-1015" V 5828 1988 60  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm" H 1625 -2150 60  0001 C CNN
+F 3 "" H 1625 -2150 60  0001 C CNN
+	1    5775 1900
 	0    1    1    0   
 $EndComp
 $Comp
 L GND #PWR013
 U 1 1 58AE33ED
-P 5375 2175
-F 0 "#PWR013" H -350 -1150 50  0001 C CNN
-F 1 "GND" H 5380 2002 50  0000 C CNN
-F 2 "" H -350 -900 50  0001 C CNN
-F 3 "" H -350 -900 50  0001 C CNN
-	1    5375 2175
+P 5775 2175
+F 0 "#PWR013" H 50  -1150 50  0001 C CNN
+F 1 "GND" H 5780 2002 50  0000 C CNN
+F 2 "" H 50  -900 50  0001 C CNN
+F 3 "" H 50  -900 50  0001 C CNN
+	1    5775 2175
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -393,9 +383,6 @@ F 3 "" H -750 -2600 50  0001 C CNN
 	1    4700 1500
 	0    1    1    0   
 $EndComp
-Connection ~ 5375 1625
-Wire Wire Line
-	5375 1700 5375 1625
 Connection ~ 4975 1625
 Wire Wire Line
 	4975 1500 4850 1500
@@ -421,7 +408,7 @@ Connection ~ 4400 1500
 Wire Wire Line
 	4400 1500 4400 1425
 Wire Wire Line
-	3450 2700 4125 2700
+	3450 2700 4475 2700
 Wire Wire Line
 	3450 2300 4125 2300
 Wire Wire Line
@@ -518,7 +505,7 @@ Wire Wire Line
 Wire Wire Line
 	3450 2900 4725 2900
 Wire Wire Line
-	5375 2175 5375 2100
+	5775 2175 5775 2100
 $Sheet
 S 6575 2350 1175 850 
 U 58BFA1BE
@@ -666,4 +653,36 @@ Wire Wire Line
 	8700 4100 7950 4100
 Text Label 8025 4100 0    60   ~ 0
 1_WIRE_IO
+$Comp
+L DS18B20 U2
+U 1 1 593A33A5
+P 5825 5775
+F 0 "U2" H 6052 5821 50  0000 L CNN
+F 1 "DS18B20" H 6052 5730 50  0000 L CNN
+F 2 "TO_SOT_Packages_THT:TO-92_Inline_Wide" H 5675 6025 50  0001 C CNN
+F 3 "" H 5675 6025 50  0001 C CNN
+	1    5825 5775
+	1    0    0    -1  
+$EndComp
+$Comp
+L Jumper JP?
+U 1 1 5949FBE4
+P 5100 2050
+F 0 "JP?" H 5100 2314 50  0000 C CNN
+F 1 "Jumper" H 5100 2223 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x02_Pitch2.54mm" H 5100 2050 50  0001 C CNN
+F 3 "" H 5100 2050 50  0001 C CNN
+	1    5100 2050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 1700 5775 1625
+Connection ~ 5775 1625
+Wire Wire Line
+	5400 2050 5400 1625
+Connection ~ 5400 1625
+Wire Wire Line
+	4475 2700 4475 2050
+Wire Wire Line
+	4475 2050 4800 2050
 $EndSCHEMATC

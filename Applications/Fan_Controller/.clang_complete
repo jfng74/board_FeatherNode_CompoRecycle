@@ -2,22 +2,28 @@
 -I/home/caribou/.platformio/packages/framework-arduinosam/system/samd/CMSIS/CMSIS/Include
 -I/home/caribou/.platformio/packages/framework-arduinosam/system/samd/CMSIS-Atmel/CMSIS/Device/ATMEL
 -I/home/caribou/.platformio/packages/framework-arduinosam/variants/adafruit_feather_m0
--I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/RTCZero/src
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/Wire
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/Adafruit HTU21DF Library
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/SPI
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/Arduino-DS3231
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/RadioHead-1.74
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/RTCZero/src
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/Adafruit Unified Sensor
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/Adafruit BME280 Library
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/lib/NodeFeatherFanController
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/src
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/lib/NodeFeatherFanController
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/Adafruit BME280 Library
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/Adafruit HTU21DF Library
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/Adafruit Unified Sensor
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/Arduino-DS3231
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/RTCZero/src
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Fan_Controller/.piolibdeps/RadioHead-1.74
 -I/home/caribou/.platformio/lib/Adafruit BME280 Library_ID166
 -I/home/caribou/.platformio/lib/Adafruit HTU21DF Library_ID566
 -I/home/caribou/.platformio/lib/Adafruit Unified Sensor_ID31
--I/home/caribou/.platformio/lib/DS3231_ID1379
--I/home/caribou/.platformio/lib/DS3232RTC_ID78
+-I/home/caribou/.platformio/lib/IBM LMIC framework_ID852/src
+-I/home/caribou/.platformio/lib/LiquidCrystal_PCF8574_ID1165/src
 -I/home/caribou/.platformio/lib/RTCZero_ID873/src
 -I/home/caribou/.platformio/lib/RadioHead_ID124
 -I/home/caribou/.platformio/lib/SdFat_ID322/src
