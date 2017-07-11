@@ -13,7 +13,7 @@
 
 
 // Node Address
-#define NODE_ADDR 0x01
+#define NODE_ADDR 0x00
 #define OPERATION_TIME 5
 
 //EPROM

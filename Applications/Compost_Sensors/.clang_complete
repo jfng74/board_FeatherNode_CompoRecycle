@@ -1,14 +1,14 @@
 -I/home/caribou/.platformio/packages/framework-arduinosam/cores/adafruit
 -I/home/caribou/.platformio/packages/framework-arduinosam/system/samd/CMSIS/CMSIS/Include
 -I/home/caribou/.platformio/packages/framework-arduinosam/system/samd/CMSIS-Atmel/CMSIS/Device/ATMEL
--I/home/caribou/.platformio/packages/framework-arduinosam/variants/adafruit_feather_m0
+-I/home/caribou/.platformio/packages/framework-arduinosam/variants/feather_m0
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/SPI
--I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RTCZero/src
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/Wire
--I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit Unified Sensor
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit HTU21DF Library
--I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit BME280 Library
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RTCZero/src
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit Unified Sensor
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RadioHead-1.74
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit BME280 Library
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Arduino-DS3231
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/lib/NodeFeatherCompost
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/src
@@ -31,6 +31,7 @@
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/HID
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/I2S/src
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/SAMD_AnalogCorrection/src
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/SDU/src
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/SPI
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/USBHost/src
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/Wire
@@ -43,8 +44,9 @@
 -DPLATFORMIO=30401
 -D__SAMD21G18A__
 -DARDUINO_ARCH_SAMD
+-DARDUINO_SAMD_ZERO
 -DARDUINO_SAMD_FEATHER_M0
--DARDUINO=10614
+-DARDUINO=10615
 -DUSB_VID=0x239A
 -DUSB_PID=0x800B
 -DUSB_PRODUCT="Adafruit Feather M0"

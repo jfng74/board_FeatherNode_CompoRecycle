@@ -100,6 +100,7 @@ void NodeFeatherFanController::initialisation(void){
     // On set l'alarme a minutes_alarme + un certain temps en secondes avant de se réveiller
     clock.setAlarm1(0, 0, f_minutes_alarme, (OPERATION_TIME * NB_NODES) + OPERATION_TIME, DS3231_MATCH_M_S,true);
     digitalWrite(LED_GREEN_PIN, HIGH); // LED is on
+
 }
 
 void NodeFeatherFanController::loop(void){
