@@ -10,6 +10,7 @@ NodeFeatherCompost::NodeFeatherCompost(){
   cnd.node_address = NODE_ADDR;
   cnd.delay_minutes = 1;
   cnd.txpower = 5;
+  ds3231_seconds_alarm = 0;
 //  txpower = 5;
 //  delay_minutes = 1;
 
@@ -19,16 +20,13 @@ NodeFeatherCompost::NodeFeatherCompost(){
   Serial1.print("Initialisation du node : "); Serial1.println(NODE_ADDR);
   rf95 = new RH_RF95(RFM95_CS, RFM95_INT);
 
-
-// Initialisation du RTC
-//  rtc.begin();
-//	rtc.setTime(0,0,0);
-//	rtc.setAlarmTime(0,5,0);
+  // Remise a zero du eprom
+//  Wire.begin(); // initialisation du i2c pour eeprom externe
+//  resetEEPROM(I2C_EEPROM_ADDRESS);
 
   bme_ok  = bme.begin(0x76);
   if (!bme_ok) {
     Serial1.println("Could not find a valid BME280 sensor, check wiring!");
-//		while (1);
   }
   // Initialisation de la pin de sortie pour la led rouge et eteint la led
   pinMode(13, OUTPUT);
@@ -70,23 +68,22 @@ NodeFeatherCompost::NodeFeatherCompost(){
 
   // Initialisation des valeurs a partir du EEPROM
 
-	if (readEEPROM(I2C_EEPROM_ADDRESS, 4) == 255)
-		{
+	if (readEEPROM(I2C_EEPROM_ADDRESS, EEPROM_INIT) == 255){
 		Serial1.println("eprom not initialized!");
-		// setpoint 22c = 65,176,0,0;
-		writeEEPROM(I2C_EEPROM_ADDRESS, 4, cnd.delay_minutes); // delais entre les lectures = 1 minute
-
+		writeEEPROM(I2C_EEPROM_ADDRESS, EEPROM_DELAIS_MINUTES, cnd.delay_minutes); // delais entre les lectures = 1 minute
+    writeEEPROM(I2C_EEPROM_ADDRESS, EEPROM_SECONDS_ALARM, ds3231_seconds_alarm);
+    writeEEPROM(I2C_EEPROM_ADDRESS, EEPROM_INIT, 0);
 	}
 	else {
-		cnd.delay_minutes = readEEPROM(I2C_EEPROM_ADDRESS, 4);
+		cnd.delay_minutes = readEEPROM(I2C_EEPROM_ADDRESS, EEPROM_DELAIS_MINUTES);
     Serial1.print("eprom read delay_minutes : "); Serial1.println(cnd.delay_minutes);
+    ds3231_seconds_alarm = readEEPROM(I2C_EEPROM_ADDRESS, EEPROM_SECONDS_ALARM);
+    Serial1.print("eprom read seconds alarm : "); Serial1.println(ds3231_seconds_alarm);
 	}
-
   Serial1.println("Fin initialisation");
 }
 
 void NodeFeatherCompost::loop(void){
-
   Serial1.println("Lecture des valeurs");
   cnd.ntc_1 = read_temp(NTC_1);
   cnd.ntc_2 = read_temp(NTC_2);
@@ -103,49 +100,14 @@ void NodeFeatherCompost::loop(void){
   }
   cnd.conductivite = read_conductivite(A3);
 
+  dt = clock.getDateTime();
+  cnd.timestamp = dt.unixtime;
+
   send_node_ready();
   if(ReceiveRFData()){
       parse_rf_data(buf);  //  Check et envoie les donnees
   }
-  //send_all_data();
   send_compost_node_data();
-
-
-//  dt = clock.getDateTime();
-//  Serial.println(clock.dateFormat("d-m-Y H:i:s - l", dt));
-//  digitalWrite(alarmLED, true);
-//  delay(1000);
-//  digitalWrite(alarmLED, false);
-//  delay(1000);
-//  if (clock.isAlarm1(false)) // check if alarm 1 is set
-//  { clock.armAlarm1(true); // if yes, then arm it again for next period
-
-/* Enlever les commentaires pour activer le rtc
-  Serial1.println("clock.begin");
-  clock.begin();
-  clock.setBattery(true,false);
-  clock.enableOutput(false);
-  Serial1.println("clock.setAlarm1");
-  clock.setAlarm1(0, 0, 0, 5, DS3231_MATCH_S,true);
-*/
-//  }
-
-/*
-  if (rf95->available()) {
-    if (rf95->recv(buf, &len)) {
-      RH_RF95::printBuffer("Received: ", buf, len);
-      parse_data(buf);  //  Check et envoie les donnees
-      Serial.print("RSSI: ");
-      Serial.println(rf95->lastRssi(), DEC);
-      //      Serial.println("coucou!");
-    }
-    else
-    {
-      Serial.println("Receive failed");
-    }
-  }
-  */
-//    delay(1000);
   power_off();
   delay(2000);
 }
@@ -177,6 +139,7 @@ void NodeFeatherCompost::send_batt_voltage(void){
 
 void NodeFeatherCompost::send_compost_node_data(void){
   Serial1.println("send_compost_node_data()");
+
   byte* cnd_pointer = (byte*)&cnd;
   radiopacket[0]=FEATHER_MSG_HEADER;
 	radiopacket[1]=FEATHER_MSG_COMPOST_NODE_DATA;
@@ -370,13 +333,16 @@ void NodeFeatherCompost::parse_rf_data(uint8_t Thebuf[]){
 		Serial1.print("Set new delay minute : ");Serial1.println(cnd.delay_minutes);
   }
   else if(Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_SET_CLOCK
-    && Thebuf[2]==NODE_ADDR && Thebuf[7]==FEATHER_MSG_END){
+    && Thebuf[2]==NODE_ADDR && Thebuf[9]==FEATHER_MSG_END){
     Serial1.println("FEATHER_MSG_SET_CLOCK");
     uint32_t timeFromPC;
     uint32_array[3]=buf[3];
     uint32_array[2]=buf[4];
     uint32_array[1]=buf[5];
     uint32_array[0]=buf[6];
+    ds3231_minutes_alarm=buf[7];
+    ds3231_seconds_alarm=buf[8];
+    writeEEPROM(I2C_EEPROM_ADDRESS, EEPROM_SECONDS_ALARM, ds3231_seconds_alarm);
     memcpy(&timeFromPC,&uint32_array,sizeof(timeFromPC));
     Serial1.print("timeFromPC : ");Serial1.println(timeFromPC);
     clock.setDateTime(timeFromPC);
@@ -390,7 +356,11 @@ void NodeFeatherCompost::parse_rf_data(uint8_t Thebuf[]){
     if(Thebuf[3]!= cnd.delay_minutes){
       Serial1.println("FEATHER_MSG_SSR_READY : setting delay_minutes");
       cnd.delay_minutes = Thebuf[3];
-      writeEEPROM(I2C_EEPROM_ADDRESS, 4, cnd.delay_minutes);
+      writeEEPROM(I2C_EEPROM_ADDRESS, EEPROM_DELAIS_MINUTES, cnd.delay_minutes);
+//      if(cnd.delay_minutes > 1){
+      ds3231_minutes_alarm = Thebuf[4];
+      clock_ok=true;
+//      }
     }
   }
   else if (Thebuf[0]==FEATHER_MSG_HEADER && Thebuf[1]==FEATHER_MSG_INCREASE_RF
@@ -438,17 +408,24 @@ uint16_t NodeFeatherCompost::read_conductivite(uint8_t analog_pin){
 }
 
 void NodeFeatherCompost::power_off(void){
-//  Serial1.println("clock.begin");
-  clock.begin();
-  dt = clock.getDateTime();
+  Serial1.println("power_off()");
+
+  if(!clock_ok){
+    clock.begin();
+    dt = clock.getDateTime();
+    ds3231_minutes_alarm = dt.minute + cnd.delay_minutes;
+    if(ds3231_minutes_alarm >59){
+      ds3231_minutes_alarm = ds3231_minutes_alarm - 60;
+    }
+  }
+
   Serial1.println(clock.dateFormat("d-m-Y H:i:s - l", dt));
+  Serial1.print("minutes_alarme : "); Serial1.print(ds3231_minutes_alarm);
+  Serial1.print(" secondes_alarme : ");Serial1.println(ds3231_seconds_alarm);
+
   clock.setBattery(true,false);
   clock.enableOutput(false);
-//  Serial1.println("clock.setAlarm1");
-  uint8_t minutes_alarme = dt.minute + cnd.delay_minutes;
-  if(minutes_alarme >59)
-    minutes_alarme = minutes_alarme - 60;
-  clock.setAlarm1(0, 0, minutes_alarme, OPERATION_TIME * NODE_ADDR, DS3231_MATCH_M_S,true);
+  clock.setAlarm1(0, 0, ds3231_minutes_alarm, ds3231_seconds_alarm, DS3231_MATCH_M_S,true);
 }
 
 void NodeFeatherCompost::send_node_ready(void){
@@ -461,6 +438,14 @@ void NodeFeatherCompost::send_node_ready(void){
   rf95->send((uint8_t *)radiopacket, 5);
   rf95->waitPacketSent();
 
+}
+
+void NodeFeatherCompost::resetEEPROM(int deviceaddress){
+	Serial1.print("resetEEPROM()");
+  for(int eeaddress = 0;eeaddress<EEPROM_MAX_ADDRESS;eeaddress++){
+    writeEEPROM(deviceaddress, eeaddress, EEPROM_INIT_VALUE);
+    Serial1.println(eeaddress);
+  }
 }
 
 void NodeFeatherCompost::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte data ){

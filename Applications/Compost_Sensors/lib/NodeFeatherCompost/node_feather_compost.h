@@ -14,11 +14,15 @@
 
 // Node Address
 #define NODE_ADDR 0x00
-#define OPERATION_TIME 5
+#define OPERATION_TIME 3
 
 //EPROM
 #define I2C_EEPROM_ADDRESS 0x50
-
+#define EEPROM_INIT_VALUE 0xff
+#define EEPROM_MAX_ADDRESS 0xff
+#define EEPROM_INIT  0x00
+#define EEPROM_DELAIS_MINUTES 0x04
+#define EEPROM_SECONDS_ALARM 0x05
 
 //RFM variables
 // Change to 434.0 or other frequency, must match RX's freq!
@@ -82,7 +86,7 @@ private:
 
   void writeEEPROM(int deviceaddress, unsigned int eeaddress, byte data );
   byte readEEPROM(int deviceaddress, unsigned int eeaddress );
-
+  void resetEEPROM(int deviceaddress);
   float read_batt_voltage(void);
   float read_temp(uint8_t analog_pin);
   uint16_t read_conductivite(uint8_t analog_pin);
@@ -92,6 +96,8 @@ private:
   bool bme_ok;
   RTCZero rtc;
   RH_RF95 *rf95;
+  byte ds3231_seconds_alarm;
+  byte ds3231_minutes_alarm;
 //  RH_RF95 rf95_jf(RFM95_CS, RFM95_INT);
   int samples[NUMSAMPLES];
   char radiopacket[50];

@@ -83,7 +83,6 @@ void NodeFeatherFanController::initialisation(void){
 
   SendGetDateTime(NODE_SSR_ADDR);
   if(ReceiveRFData()){
-//      Serial1.println("ReceiveRFData()");
       parseRF_data();
   }
 
@@ -92,13 +91,13 @@ void NodeFeatherFanController::initialisation(void){
   dt = clock.getDateTime();
 
   // Calcule de la minute ou il y aura alarme.  La prochaine minute est défini par la minute actuelle + le delais en minutes
-  f_minutes_alarme = dt.minute + nfc.delais_minute;
-  if(f_minutes_alarme > 59){
-    f_minutes_alarme = f_minutes_alarme - 60;
+  ds3231_minutes_alarm = dt.minute + nfc.delais_minute;
+  if(ds3231_minutes_alarm > 59){
+    ds3231_minutes_alarm = ds3231_minutes_alarm - 60;
   }
 
     // On set l'alarme a minutes_alarme + un certain temps en secondes avant de se réveiller
-    clock.setAlarm1(0, 0, f_minutes_alarme, (OPERATION_TIME * NB_NODES) + OPERATION_TIME, DS3231_MATCH_M_S,true);
+    clock.setAlarm1(0, 0, ds3231_minutes_alarm, (NODE_SSR_BASE_SECOND + (COMPOST_NODE_OPERATION_TIME * NB_NODES)) + 2, DS3231_MATCH_M_S,true);
     digitalWrite(LED_GREEN_PIN, HIGH); // LED is on
 
 }
@@ -111,7 +110,7 @@ void NodeFeatherFanController::loop(void){
 
   if(alarmFlag){
     alarmFlag=false;
-    Serial1.println("loop() : RTC Alarm");
+    //Serial1.println("loop() : RTC Alarm");
 
     if(ssr_ModeAuto){
       switch (ssrd.current_PC) {
@@ -177,8 +176,12 @@ void NodeFeatherFanController::loop(void){
     clear_temp_avg();
     i_t_avg=0;
     ssrd.t_avg=0;
+
+    dt = clock.getDateTime();
+    Serial1.println(clock.dateFormat("d-m-Y H:i:s",dt));
+    ssrd.timestamp = dt.unixtime;
+
     for(i_node=0;i_node<NB_NODES;i_node++){
-//      if(nodes_data[i_t_avg].new_data_received){
       if(compost_node_new_data[i_node]){
         Serial1.print("\tNode : "); Serial1.print(i_node); Serial1.println(" : new_data_received");
         do_avg=true;
@@ -201,12 +204,11 @@ void NodeFeatherFanController::loop(void){
     }
     set_current_PC();
 
-    dt = clock.getDateTime();
-    f_minutes_alarme = dt.minute + nfc.delais_minute;
-    if(f_minutes_alarme >59){
-      f_minutes_alarme = f_minutes_alarme - 60;
+    ds3231_minutes_alarm = dt.minute + nfc.delais_minute;
+    if(ds3231_minutes_alarm >59){
+      ds3231_minutes_alarm = ds3231_minutes_alarm - 60;
     }
-    clock.setAlarm1(0, 0, f_minutes_alarme, (OPERATION_TIME * NB_NODES) + 5, DS3231_MATCH_M_S,true);
+    clock.setAlarm1(0, 0, ds3231_minutes_alarm, (NODE_SSR_BASE_SECOND + (COMPOST_NODE_OPERATION_TIME * NB_NODES)) + 2, DS3231_MATCH_M_S,true);
     SendSSR_ready_for_commands(NODE_SSR_ADDR); // send ready for commands to Raspberry
     if(ReceiveRFData()){
         parseRF_data();
@@ -321,7 +323,6 @@ void NodeFeatherFanController::eeprom_initialisation(void){
 		Serial1.println("\tEEPROM non initialise!");
     // Si le EEPROM est non initialise, on effectue une assignation des valeurs de configuration par defaut et on les sauvegarde dans le EEPROM.
     //
-
     nfc.PC1 = SSR_DEFAULT_PC1;
     nfc.PC2 = SSR_DEFAULT_PC2;
     nfc.PC3 = SSR_DEFAULT_PC3;
@@ -402,7 +403,6 @@ void NodeFeatherFanController::print_NFC(void){
   }
 }
 
-
 byte NodeFeatherFanController::ReceiveRFData(void){
 //  Serial1.println("ReceiveRFData()");
   if (rf95->waitAvailableTimeout(2000)) {
@@ -425,20 +425,23 @@ byte NodeFeatherFanController::ReceiveRFData(void){
 void NodeFeatherFanController::parseRF_data(void){
   byte float_array[4];
   byte u16_array[2];
+  byte compost_node_alarm_second;
+  byte t_delais_minutes;
 //  byte uint32_array[4];
   int16_t node_id;
-  uint16_t conductivite;
-	float t_1,t_2,t_3,h_1,batt_voltage,pression;
+//  uint16_t conductivite;
+//	float t_1,t_2,t_3,h_1,batt_voltage,pression;
 
-  if (buf[0]==FEATHER_MSG_HEADER){
+/*  if (buf[0]==FEATHER_MSG_HEADER){
     Serial1.println("parseRF_data() : FEATHER_MSG_HEADER");
-  }
+  }*/
   if (buf[0]==FEATHER_MSG_HEADER && buf[1]==FEATHER_MSG_NODE_READY && buf[4] == FEATHER_MSG_END){
     Serial1.println("parseRF_data() : FEATHER_MSG_NODE_READY");
     node_id = getNodeID(buf[2]);
     if(node_id != -1){
       if(!compost_node_clock_ok[node_id]){
-        SendSetDateTime(buf[2]);
+        compost_node_alarm_second = NODE_SSR_BASE_SECOND + (node_id * COMPOST_NODE_OPERATION_TIME);
+        SendSetDateTime(buf[2], compost_node_alarm_second);
         compost_node_clock_ok[node_id] = 1;
       }
       else{
@@ -500,7 +503,7 @@ void NodeFeatherFanController::parseRF_data(void){
         Serial1.println("FEATHER_MSG_Compost_NODE_DATA : Not a valid node address");
       }
     }
-
+/*
   else if (buf[0]==FEATHER_MSG_HEADER
     && buf[1]==FEATHER_MSG_RESPONSE_ALL_DATA
     && buf[3]==READ_ALL_DATA ) {
@@ -597,28 +600,7 @@ void NodeFeatherFanController::parseRF_data(void){
       else{
         Serial1.println("FEATHER_MSG_Compost_NODE_DATA : Not a valid node address");
       }
-
-
-//      lcd.setBacklight(255);lcd.home();lcd.clear();
-//      sprintf(lcd_buffer, "RSSI: %d TXP: %d" ,nodes_data[node_id].last_rssi, buf[32]);
-//      lcd.print(lcd_buffer);
-
-//      lcd.setCursor(0,1);
-//      sprintf(lcd_buffer, "T_1: %d T_2: %d" ,(int)t_1, (int)t_2);
-//      lcd.print(lcd_buffer);
-//      lcd.print("T1: ");lcd.print(t_1,2);lcd.print(" T2: "); lcd.print(t_2,2);
-
-//      lcd.setCursor(0,2);
-//      sprintf(lcd_buffer, "T:%d H:%d: P:%d" ,(int)t_3, (int)h_1, (int)pression);
-//      lcd.print(lcd_buffer);
-//      lcd.print("T3: ");lcd.print(t_3,2);lcd.print(" H1: ");lcd.print(h_1,2);
-
-//      lcd.setCursor(0,3);
-  //    sprintf(lcd_buffer, "BATT_VOLTAGE : %d" ,(int)batt_voltage);
-//      lcd.print(lcd_buffer);
-//      lcd.print("P:");lcd.print(pression,1);lcd.print(" batV:");lcd.print(batt_voltage,2);
-
-    }
+    }*/
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SEND_SSR_NODE_CFG
       && buf[2]==NODE_SSR_ADDR
@@ -629,91 +611,6 @@ void NodeFeatherFanController::parseRF_data(void){
         if(ReceiveRFData()){
             parseRF_data();
         }
-
-/*
-        byte* float_array;
-        byte* array_u16;
-
-        int ii=4;
-
-        radiopacket[0]=FEATHER_MSG_HEADER;
-        radiopacket[1]=FEATHER_MSG_RESPONSE_DATA;
-        radiopacket[2]=NODE_SSR_ADDR;
-        radiopacket[3]=SEND_ALL_CFG;
-
-        float_array = (byte*) &nfc.PC1;
-        radiopacket[ii++]= float_array[3];
-        radiopacket[ii++]= float_array[2];
-        radiopacket[ii++]= float_array[1];
-        radiopacket[ii++]= float_array[0];
-
-        float_array = (byte*) &nfc.PC2;
-        radiopacket[ii++]= float_array[3];
-        radiopacket[ii++]= float_array[2];
-        radiopacket[ii++]= float_array[1];
-        radiopacket[ii++]= float_array[0];
-
-        float_array = (byte*) &nfc.PC3;
-        radiopacket[ii++]= float_array[3];
-        radiopacket[ii++]= float_array[2];
-        radiopacket[ii++]= float_array[1];
-        radiopacket[ii++]= float_array[0];
-
-        float_array = (byte*) &nfc.PC4;
-        radiopacket[ii++]= float_array[3];
-        radiopacket[ii++]= float_array[2];
-        radiopacket[ii++]= float_array[1];
-        radiopacket[ii++]= float_array[0];
-
-        array_u16 = (byte*) &nfc.TV1;
-        radiopacket[ii++]= array_u16[1];
-        radiopacket[ii++]= array_u16[0];
-
-        array_u16 = (byte*) &nfc.TV2;
-        radiopacket[ii++]= array_u16[1];
-        radiopacket[ii++]= array_u16[0];
-
-        array_u16 = (byte*) &nfc.TV3;
-        radiopacket[ii++]= array_u16[1];
-        radiopacket[ii++]= array_u16[0];
-
-        array_u16 = (byte*) &nfc.TV4;
-        radiopacket[ii++]= array_u16[1];
-        radiopacket[ii++]= array_u16[0];
-
-        array_u16 = (byte*) &nfc.TA1;
-        radiopacket[ii++]= array_u16[1];
-        radiopacket[ii++]= array_u16[0];
-
-        array_u16 = (byte*) &nfc.TA2;
-        radiopacket[ii++]= array_u16[1];
-        radiopacket[ii++]= array_u16[0];
-
-        array_u16 = (byte*) &nfc.TA3;
-        radiopacket[ii++]= array_u16[1];
-        radiopacket[ii++]= array_u16[0];
-
-        array_u16 = (byte*) &nfc.TA4;
-        radiopacket[ii++]= array_u16[1];
-        radiopacket[ii++]= array_u16[0];
-
-        radiopacket[ii++]= nfc.delais_minute;
-
-        radiopacket[ii++]= nfc.node_compost_addr[0];
-        radiopacket[ii++]= nfc.node_compost_addr[1];
-        radiopacket[ii++]= nfc.node_compost_addr[2];
-        radiopacket[ii++]= nfc.node_compost_addr[3];
-
-        radiopacket[ii++]= nfc.node_compost_cfg[0];
-        radiopacket[ii++]= nfc.node_compost_cfg[1];
-        radiopacket[ii++]= nfc.node_compost_cfg[2];
-        radiopacket[ii++]= nfc.node_compost_cfg[3];
-
-        radiopacket[ii]= FEATHER_MSG_END;
-        Serial1.print("packet to send : ");Serial1.println(ii);
-        rf95->send((uint8_t *)radiopacket, ii);
-        rf95->waitPacketSent();
-        */
       }
 
 
@@ -727,139 +624,6 @@ void NodeFeatherFanController::parseRF_data(void){
         if(ReceiveRFData()){
             parseRF_data();
         }
-
-
-/*
-        byte* float_array;
-        byte* array_u16;
-        byte* uint32_array;
-
-        radiopacket[0]=FEATHER_MSG_HEADER;
-        radiopacket[1]=FEATHER_MSG_RESPONSE_DATA;
-        radiopacket[2]=NODE_SSR_ADDR;
-        radiopacket[3]=SEND_ALL_TEMP;
-
-        int ii=4;
-        for(int jj=0;jj<NB_NODES;jj++){
-          cnd_array[jj].new_data = compost_node_new_data[jj];
-          radiopacket[ii++]=cnd_array[jj].node_address;
-
-          radiopacket[ii++]=cnd_array[jj].node_cfg;
-
-          uint32_array = (byte*) &cnd_array[jj].timestamp;
-          radiopacket[ii++]= uint32_array[3];
-          radiopacket[ii++]= uint32_array[2];
-          radiopacket[ii++]= uint32_array[1];
-          radiopacket[ii++]= uint32_array[0];
-
-          float_array = (byte*) &cnd_array[jj].ntc_1;
-//          Serial1.println(nodes_data[jj].temp[TEMP_1]);
-          radiopacket[ii++]= float_array[3];
-          radiopacket[ii++]= float_array[2];
-          radiopacket[ii++]= float_array[1];
-          radiopacket[ii++]= float_array[0];
-
-          float_array = (byte*) &cnd_array[jj].ntc_2;
-//          Serial1.println(nodes_data[jj].temp[TEMP_2]);
-          radiopacket[ii++]= float_array[3];
-          radiopacket[ii++]= float_array[2];
-          radiopacket[ii++]= float_array[1];
-          radiopacket[ii++]= float_array[0];
-
-          float_array = (byte*) &cnd_array[jj].bme_humidity;
-//          Serial1.println(nodes_data[jj].temp[TEMP_3]);
-          radiopacket[ii++]= float_array[3];
-          radiopacket[ii++]= float_array[2];
-          radiopacket[ii++]= float_array[1];
-          radiopacket[ii++]= float_array[0];
-
-          float_array = (byte*) &cnd_array[jj].bme_temp;
-//          Serial1.println(nodes_data[jj].temp[TEMP_3]);
-          radiopacket[ii++]= float_array[3];
-          radiopacket[ii++]= float_array[2];
-          radiopacket[ii++]= float_array[1];
-          radiopacket[ii++]= float_array[0];
-
-          float_array = (byte*) &cnd_array[jj].bme_pression;
-//          Serial1.println(nodes_data[jj].temp[TEMP_3]);
-          radiopacket[ii++]= float_array[3];
-          radiopacket[ii++]= float_array[2];
-          radiopacket[ii++]= float_array[1];
-          radiopacket[ii++]= float_array[0];
-
-          array_u16 = (byte*) &cnd_array[jj].conductivite;
-//          Serial1.println(nodes_data[jj].conductivite);
-          radiopacket[ii++]= array_u16[1];
-          radiopacket[ii++]= array_u16[0];
-
-          float_array = (byte*) &cnd_array[jj].batt_voltage;
-//          Serial1.println(nodes_data[jj].battery_voltage);
-          radiopacket[ii++]= float_array[3];
-          radiopacket[ii++]= float_array[2];
-          radiopacket[ii++]= float_array[1];
-          radiopacket[ii++]= float_array[0];
-
-          radiopacket[ii++]=cnd_array[jj].delay_minutes;
-
-          radiopacket[ii++]=cnd_array[jj].txpower;
-
-          radiopacket[ii++]=cnd_array[jj].last_rssi;
-
-          radiopacket[ii++]=cnd_array[jj].new_data;
-          radiopacket[ii++]=cnd_array[jj].clock_ok;
-
-        }
-
-        // Relais
-        // Temperature moyenne
-        float_array = (byte*) &ssrd.t_avg;
-        radiopacket[ii++]= float_array[3];
-        radiopacket[ii++]= float_array[2];
-        radiopacket[ii++]= float_array[1];
-        radiopacket[ii++]= float_array[0];
-//        Serial1.println(t_avg);
-
-
-        // Point de consigne actuelle
-        radiopacket[ii++] = ssrd.current_PC;
-
-        // Etat du relais
-        radiopacket[ii++] = ssrd.ssr_state;
-        radiopacket[ii]= FEATHER_MSG_END;
-        Serial1.print("packet to send : ");Serial1.println(ii);
-        rf95->send((uint8_t *)radiopacket, ii);
-        rf95->waitPacketSent();
-        clear_compost_nodes_new_data();
-*/
-      }
-      else if (buf[0]==FEATHER_MSG_HEADER
-        && buf[1]==FEATHER_MSG_SET_DATA
-        && buf[2]==NODE_SSR_ADDR
-        && buf[3]==RELAY_THRESHOLD) {
-/*          float_array_t_consigne[3]=buf[4];
-          float_array_t_consigne[2]=buf[5];
-          float_array_t_consigne[1]=buf[6];
-          float_array_t_consigne[0]=buf[7];
-          writeEEPROM(I2C_EEPROM_ADDRESS, EEPROM_ADDR_SETPOINT + 0, buf[7]);
-          writeEEPROM(I2C_EEPROM_ADDRESS, EEPROM_ADDR_SETPOINT + 1, buf[6]);
-          writeEEPROM(I2C_EEPROM_ADDRESS, EEPROM_ADDR_SETPOINT + 2, buf[5]);
-          writeEEPROM(I2C_EEPROM_ADDRESS, EEPROM_ADDR_SETPOINT + 3, buf[4]);
-
-          memcpy(&t_consigne,&float_array_t_consigne,sizeof(t_consigne));
-          ssr_setpoint = t_consigne;
-          Serial1.print("New setpoint: ");
-          Serial1.println(ssr_setpoint);
-          */
-    }
-    else if (buf[0]==FEATHER_MSG_HEADER
-      && buf[1]==FEATHER_MSG_SET_DATA
-      && buf[2]==NODE_SSR_ADDR
-      && buf[3]==DELAY_BETWEEN_READS
-      && buf[5]==FEATHER_MSG_END){
-        nfc.delais_minute = buf[4];
-        Serial1.print("parseRF_data() :  DELAY_BETWEEN_READS ");
-        Serial1.println(nfc.delais_minute);
-        writeEEPROM_NFCConfig();
     }
     else if (buf[0]==FEATHER_MSG_HEADER
       && buf[1]==FEATHER_MSG_SET_DATA
@@ -975,9 +739,23 @@ void NodeFeatherFanController::parseRF_data(void){
         Serial1.println(u16_v);
 
         // delais_minute
-        nfc.delais_minute = buf[ii++];
+
+        t_delais_minutes = buf[ii++];
         Serial1.print("\tDelais Minute : ");
-        Serial1.println(nfc.delais_minute);
+        Serial1.println(t_delais_minutes);
+
+        if(nfc.delais_minute != t_delais_minutes){
+          nfc.delais_minute = t_delais_minutes;
+
+          dt = clock.getDateTime();
+          ds3231_minutes_alarm = dt.minute + nfc.delais_minute;
+          if(ds3231_minutes_alarm > 59){
+            ds3231_minutes_alarm = ds3231_minutes_alarm - 60;
+          }
+          Serial1.print("minutes_alarme : ");
+          Serial1.println(ds3231_minutes_alarm);
+          clock.setAlarm1(0, 0, ds3231_minutes_alarm, (NODE_SSR_BASE_SECOND + (COMPOST_NODE_OPERATION_TIME * NB_NODES)) + 2, DS3231_MATCH_M_S,true);
+        }
 
         nfc.node_compost_addr[0]=buf[ii++];
         nfc.node_compost_addr[1]=buf[ii++];
@@ -994,66 +772,9 @@ void NodeFeatherFanController::parseRF_data(void){
             nfc.node_compost_text[j][i]=buf[ii++];
           }
         }
-
         writeEEPROM_NFCConfig();
     }
-    else if (buf[0]==FEATHER_MSG_HEADER
-      && buf[1]==FEATHER_MSG_GET_DATA
-      && buf[2]==NODE_SSR_ADDR
-      && buf[3]==RELAY_THRESHOLD
-      && buf[4]==FEATHER_MSG_END) {
-    	   SendSetpoint(NODE_SSR_ADDR);
-    }
-    else if (buf[0]==FEATHER_MSG_HEADER
-      && buf[1]==FEATHER_MSG_GET_DATA
-      && buf[2]==NODE_SSR_ADDR
-      && buf[3]==READ_BATTERY_VOLTAGE
-      && buf[4]==FEATHER_MSG_END) {
-    	   SendBatVoltage(NODE_SSR_ADDR);
-    }
-    else if (buf[0]==FEATHER_MSG_HEADER
-      && buf[1]==FEATHER_MSG_SET_DATA
-      && buf[2]==NODE_SSR_ADDR
-      && buf[3]==TURN_ON_RELAY
-      && buf[4]==FEATHER_MSG_END)	{
-        setFanMotor(true);
-        ssr_ModeAuto = false;
-        ssrd.ssr_state = 1;
-        Serial1.println("Mode Manuel");
-    }
-    else if (buf[0]==FEATHER_MSG_HEADER
-      && buf[1]==FEATHER_MSG_SET_DATA
-      && buf[2]==NODE_SSR_ADDR
-      && buf[3]==MODE_AUTO
-      && buf[4]==FEATHER_MSG_END) {
-        ssr_ModeAuto = true;
-        Serial1.println("Mode Auto");
-//        ssr_etat = 2;
-    }
-    else if (buf[0]==FEATHER_MSG_HEADER
-      && buf[1]==FEATHER_MSG_SET_DATA
-      && buf[2]==NODE_SSR_ADDR
-      && buf[3]==TURN_OFF_RELAY
-      && buf[4]==FEATHER_MSG_END) {
-        setFanMotor(false);
-        ssr_ModeAuto = false;
-        ssrd.ssr_state = 0;
-        Serial1.println("Mode Manuel : Off");
-    }
-    else if (buf[0]==FEATHER_MSG_HEADER
-      && buf[1]==FEATHER_MSG_GET_DATA
-      && buf[2]==NODE_SSR_ADDR
-      && buf[3]==RELAY_STATE
-      && buf[4]==FEATHER_MSG_END) {
-        SendRelayState(NODE_SSR_ADDR);
-    }
-    else if (buf[0]==FEATHER_MSG_HEADER
-      && buf[1]==FEATHER_MSG_GET_DATA
-      && buf[2]==NODE_SSR_ADDR
-      && buf[3]==LAST_RSSI
-      && buf[4]==FEATHER_MSG_END) {
-    	   SendLastRssi(NODE_SSR_ADDR);
-    }
+
     memset(buf,0,sizeof(buf));
     len = RH_RF95_MAX_MESSAGE_LEN;
 }
@@ -1078,7 +799,7 @@ uint8_t NodeFeatherFanController::getNodeID(uint8_t node_adress){
   return node_id;
 }
 */
-void NodeFeatherFanController::SendSetDateTime(byte node_adress){
+void NodeFeatherFanController::SendSetDateTime(byte node_adress, byte alarm_seconds){
   Serial1.println("SendSetDateTime() : FEATHER_MSG_SET_CLOCK");
   radiopacket[0]=FEATHER_MSG_HEADER;
 	radiopacket[1]=FEATHER_MSG_SET_CLOCK;
@@ -1092,10 +813,11 @@ void NodeFeatherFanController::SendSetDateTime(byte node_adress){
   radiopacket[4]= uint32_array[2];
   radiopacket[5]= uint32_array[1];
   radiopacket[6]= uint32_array[0];
-	radiopacket[7]=FEATHER_MSG_END;
-	rf95->send((uint8_t *)radiopacket, 8);
+  radiopacket[7]= ds3231_minutes_alarm;
+  radiopacket[8]= alarm_seconds;
+	radiopacket[9]=FEATHER_MSG_END;
+	rf95->send((uint8_t *)radiopacket, 10);
 	rf95->waitPacketSent();
-
 }
 
 void NodeFeatherFanController::SendAllCfg(void){
@@ -1271,6 +993,13 @@ void NodeFeatherFanController::SendAllTemp(void){
   }
 
   // Relais
+  // TimeStamp
+  uint32_array = (byte*) &ssrd.timestamp;
+  radiopacket[ii++]= uint32_array[3];
+  radiopacket[ii++]= uint32_array[2];
+  radiopacket[ii++]= uint32_array[1];
+  radiopacket[ii++]= uint32_array[0];
+
   // Temperature moyenne
   float_array = (byte*) &ssrd.t_avg;
   radiopacket[ii++]= float_array[3];
@@ -1298,8 +1027,9 @@ void NodeFeatherFanController::SendSSRReady(byte node_adress){
 	radiopacket[1]=FEATHER_MSG_SSR_READY;
 	radiopacket[2]=node_adress;
   radiopacket[3]=nfc.delais_minute;
-	radiopacket[4]=FEATHER_MSG_END;
-	rf95->send((uint8_t *)radiopacket, 5);
+  radiopacket[4]=ds3231_minutes_alarm;
+	radiopacket[5]=FEATHER_MSG_END;
+	rf95->send((uint8_t *)radiopacket, 6);
 	rf95->waitPacketSent();
 }
 
@@ -1347,14 +1077,14 @@ float NodeFeatherFanController::ReadBattVoltage(void){
 }
 
 void NodeFeatherFanController::setFanMotor(bool motor_state){
-  Serial1.println("setFanMotor()");
+//  Serial1.println("setFanMotor()");
 	if (motor_state){
 		digitalWrite(18, HIGH);
-    Serial1.println("\tFanMotor ON");
+//    Serial1.println("\tFanMotor ON");
   }
 	else {
 		digitalWrite(18, LOW);
-    Serial1.println("\tFanMotor OFF");
+//    Serial1.println("\tFanMotor OFF");
   }
 }
 
@@ -1504,9 +1234,9 @@ void NodeFeatherFanController::resetAlarm(void){
   byte month = 1;
   byte year = 1;
 
-  Serial1.println("resetAlarm()");
-  Serial1.print("\tSetting alarmSeconds : ");Serial1.println(alarmSeconds);
-  Serial1.print("\tSetting alarmMinutes : ");Serial1.println(alarmMinutes);
+//  Serial1.println("resetAlarm()");
+//  Serial1.print("\tSetting alarmSeconds : ");Serial1.println(alarmSeconds);
+//  Serial1.print("\tSetting alarmMinutes : ");Serial1.println(alarmMinutes);
   zerortc.setTime(hours, minutes, seconds);
   zerortc.setDate(day, month, year);
 
@@ -1515,7 +1245,7 @@ void NodeFeatherFanController::resetAlarm(void){
 }
 
 void NodeFeatherFanController::setRTCAlarm(byte seconds){
-  Serial1.println("setRTCAlarm()");
+//  Serial1.println("setRTCAlarm()");
   byte minutes_alarm;
   byte seconds_alarm;
 
@@ -1530,8 +1260,8 @@ void NodeFeatherFanController::setRTCAlarm(byte seconds){
     alarmMinutes = 0;
   }
 
-  Serial1.print("\tminutes : "); Serial1.println(alarmMinutes);
-  Serial1.print("\tseconds : "); Serial1.println(alarmSeconds);
+//  Serial1.print("\tminutes : "); Serial1.println(alarmMinutes);
+//  Serial1.print("\tseconds : "); Serial1.println(alarmSeconds);
 }
 
 int16_t NodeFeatherFanController::getNodeID(uint8_t address){

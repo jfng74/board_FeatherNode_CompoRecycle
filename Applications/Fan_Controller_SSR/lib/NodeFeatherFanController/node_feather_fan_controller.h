@@ -12,13 +12,14 @@
 #include <RTCZero.h>
 
 #define NODE_SSR_ADDR 0xFE
+#define NODE_SSR_BASE_SECOND 0
+#define COMPOST_NODE_OPERATION_TIME 3
 
 #define NB_NODES 4
 #define MAX_NODE_TEXT 16
 
 #define MAX_ASK_ALL_DATA_RETRY 3
 #define DELAY_READY_FOR_COMMAND 15000
-#define OPERATION_TIME 5
 
 /* for feather m0  */
 #define RFM95_CS 8
@@ -164,6 +165,7 @@ struct CompostNodeData{
 };
 
 struct SsrData{
+  uint32_t timestamp;
   float t_avg;
   uint8_t current_PC;
   uint8_t ssr_state;
@@ -205,7 +207,8 @@ private:
   bool ssr_ModeAuto;
   bool do_avg;
   //Variables temporaires pour fonctions
-  uint8_t f_minutes_alarme;
+  byte ds3231_minutes_alarm;
+
   float t_consigne;
   float ssr_setpoint;
 
@@ -225,10 +228,19 @@ private:
   void eeprom_initialisation(void);
   byte ReceiveRFData(void);
   void parseRF_data(void);
+/*
+  void FEATHER_MSG_NODE_READY(void);
+  void FEATHER_MSG_SET_CLOCK(void);
+  void FEATHER_MSG_COMPOST_NODE_DATA(void);
+  void FEATHER_MSG_RESPONSE_ALL_DATA(void);
+  void RELAIS_CFG(void);
+
+*/
+
   int16_t getNodeID(uint8_t node_adress);
   void SendAllCfg(void);
   void SendAllTemp(void);
-  void SendSetDateTime(byte node_adress);
+  void SendSetDateTime(byte node_adress, byte alarm_seconds);
   void SendSSRReady(byte node_adress);
   void SendSetpoint (byte node_address);
   void SendBatVoltage(byte node_address);

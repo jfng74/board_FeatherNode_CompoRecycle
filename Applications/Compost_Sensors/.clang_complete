@@ -3,13 +3,13 @@
 -I/home/caribou/.platformio/packages/framework-arduinosam/system/samd/CMSIS-Atmel/CMSIS/Device/ATMEL
 -I/home/caribou/.platformio/packages/framework-arduinosam/variants/feather_m0
 -I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/SPI
--I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/Wire
--I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit HTU21DF Library
--I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RTCZero/src
--I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit Unified Sensor
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RadioHead-1.74
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit Unified Sensor
+-I/home/caribou/.platformio/packages/framework-arduinosam/libraries/__cores__/adafruit/Wire
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit BME280 Library
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Arduino-DS3231
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/Adafruit HTU21DF Library
+-I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/.piolibdeps/RTCZero/src
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/lib/NodeFeatherCompost
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/src
 -I/home/caribou/git_rep/board_FeatherNode_CompoRecycle/Applications/Compost_Sensors/lib/NodeFeatherCompost
