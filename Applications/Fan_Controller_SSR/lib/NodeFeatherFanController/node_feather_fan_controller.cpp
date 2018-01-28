@@ -13,6 +13,7 @@ void alarmMatch(void){
 NodeFeatherFanController::NodeFeatherFanController(){
   Serial1.begin(9600);
   Serial1.println("#############################  NodeFeatherFanController()  #################################");
+  Serial1.print("Node Address : "); Serial1.println(NODE_SSR_ADDR);
 //  Wire.begin(); // initialisation du i2c pour eeprom externe
 //  resetEEPROM(I2C_EEPROM_ADDRESS);
   initialisation();
@@ -119,6 +120,9 @@ void NodeFeatherFanController::loop(void){
           setFanMotor(false);
           break;
         case PC1_ID:
+          ssrd.ssr_state = 0;
+          setFanMotor(false);
+/*
           if(ssrd.ssr_state){
             setRTCAlarm(nfc.TA1);
             ssrd.ssr_state = 0;
@@ -129,6 +133,7 @@ void NodeFeatherFanController::loop(void){
             ssrd.ssr_state = 1;
             setFanMotor(true);
           }
+          */
         break;
         case PC2_ID:
         if(ssrd.ssr_state){
@@ -166,6 +171,9 @@ void NodeFeatherFanController::loop(void){
           setFanMotor(true);
         }
         break;
+        case PC5_ID:
+          ssrd.ssr_state = 1;
+          setFanMotor(true);
       }
       resetAlarm();
     }
@@ -1212,6 +1220,10 @@ void NodeFeatherFanController::set_current_PC(void){
     else if(ssrd.t_avg >= nfc.PC3 && ssrd.t_avg < nfc.PC4 ){
       ssrd.current_PC = PC4_ID;
       Serial1.println("PC4");
+    }
+    else if(ssrd.t_avg >= nfc.PC4){
+      ssrd.current_PC = PC5_ID;
+      Serial1.println("PC5");
     }
     do_avg=false;
   }
