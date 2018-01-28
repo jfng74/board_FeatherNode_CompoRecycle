@@ -1,35 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:noeud_senseur-rescue
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:jfng
+EESchema Schematic File Version 4
 LIBS:noeud_senseur-cache
 EELAYER 26 0
 EELAYER END
@@ -46,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L R R17
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R17
 U 1 1 58DBF562
 P 2950 2350
 F 0 "R17" H 3020 2396 50  0000 L CNN
@@ -57,7 +26,7 @@ F 3 "" H 2950 2350 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L R R16
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R16
 U 1 1 58DBF60A
 P 2950 1750
 F 0 "R16" H 3020 1796 50  0000 L CNN
@@ -68,7 +37,7 @@ F 3 "" H 2950 1750 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L R R15
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R15
 U 1 1 58DBF63E
 P 2400 1775
 F 0 "R15" H 2470 1821 50  0000 L CNN
@@ -79,7 +48,7 @@ F 3 "" H 2400 1775 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR52
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR52
 U 1 1 58DBFD32
 P 2950 1375
 F 0 "#PWR52" H 2950 1225 50  0001 C CNN
@@ -90,7 +59,7 @@ F 3 "" H 2950 1375 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR51
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR51
 U 1 1 58DBFD9A
 P 2575 2600
 F 0 "#PWR51" H 2575 2350 50  0001 C CNN
@@ -101,7 +70,7 @@ F 3 "" H 2575 2600 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L CP C9
+L noeud_senseur-rescue:CP-RESCUE-noeud_senseur C9
 U 1 1 58DC0245
 P 2575 2350
 F 0 "C9" H 2692 2396 50  0000 L CNN
@@ -119,7 +88,7 @@ Wire Wire Line
 	2950 1900 2950 2200
 Connection ~ 2950 2050
 $Comp
-L GND #PWR53
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR53
 U 1 1 58DC135A
 P 2950 2600
 F 0 "#PWR53" H 2950 2350 50  0001 C CNN
@@ -153,7 +122,7 @@ Burden\nResistor
 Text Notes 850  1025 0    60   ~ 0
 Burden Resistor\n30A -> 100 ohm, 3.3V\n100A -> 18 ohm, 3.3V - 33 ohm, 5V
 $Comp
-L R R21
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R21
 U 1 1 58DC40AC
 P 6475 2350
 F 0 "R21" H 6545 2396 50  0000 L CNN
@@ -164,7 +133,7 @@ F 3 "" H 6475 2350 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L R R20
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R20
 U 1 1 58DC40B2
 P 6475 1750
 F 0 "R20" H 6545 1796 50  0000 L CNN
@@ -175,7 +144,7 @@ F 3 "" H 6475 1750 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L R R19
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R19
 U 1 1 58DC40B8
 P 5925 1775
 F 0 "R19" H 5995 1821 50  0000 L CNN
@@ -186,7 +155,7 @@ F 3 "" H 5925 1775 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR55
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR55
 U 1 1 58DC40BE
 P 6475 1375
 F 0 "#PWR55" H 6475 1225 50  0001 C CNN
@@ -197,7 +166,7 @@ F 3 "" H 6475 1375 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR54
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR54
 U 1 1 58DC40C4
 P 6100 2600
 F 0 "#PWR54" H 6100 2350 50  0001 C CNN
@@ -208,7 +177,7 @@ F 3 "" H 6100 2600 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L CP C10
+L noeud_senseur-rescue:CP-RESCUE-noeud_senseur C10
 U 1 1 58DC40CA
 P 6100 2350
 F 0 "C10" H 6217 2396 50  0000 L CNN
@@ -226,7 +195,7 @@ Wire Wire Line
 	6475 1900 6475 2200
 Connection ~ 6475 2050
 $Comp
-L GND #PWR56
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR56
 U 1 1 58DC40D8
 P 6475 2600
 F 0 "#PWR56" H 6475 2350 50  0001 C CNN
@@ -252,7 +221,7 @@ Wire Wire Line
 	5450 1550 6950 1550
 Connection ~ 5925 1550
 $Comp
-L R R18
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R18
 U 1 1 58DC43F4
 P 5300 1550
 F 0 "R18" V 5093 1550 50  0000 C CNN
@@ -269,7 +238,7 @@ CT_OUT
 Text HLabel 6950 1550 2    60   Output ~ 0
 VT_OUT
 $Comp
-L JACK_TRS_3PINS CT-1
+L jfng:JACK_TRS_3PINS CT-1
 U 1 1 58E21616
 P 1175 1850
 F 0 "CT-1" H 1156 2367 50  0000 C CNN
@@ -292,7 +261,7 @@ Wire Wire Line
 Connection ~ 5175 1750
 NoConn ~ 1575 1650
 $Comp
-L Barrel_Jack VT-1
+L jfng:Barrel_Jack VT-1
 U 1 1 5939738C
 P 4700 1650
 F 0 "VT-1" H 4778 1975 50  0000 C CNN

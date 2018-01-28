@@ -1,35 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:noeud_senseur-rescue
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:jfng
+EESchema Schematic File Version 4
 LIBS:noeud_senseur-cache
 EELAYER 26 0
 EELAYER END
@@ -46,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L R R7
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R7
 U 1 1 58C21546
 P 5500 1125
 F 0 "R7" H 5570 1171 50  0000 L CNN
@@ -57,7 +26,7 @@ F 3 "" H 50  -2975 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR42
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR42
 U 1 1 58C2154D
 P 5500 1575
 F 0 "#PWR42" H -225 -1750 50  0001 C CNN
@@ -68,7 +37,7 @@ F 3 "" H -225 -1500 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L R R13
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R13
 U 1 1 58C21559
 P 5500 2325
 F 0 "R13" H 5570 2371 50  0000 L CNN
@@ -79,7 +48,7 @@ F 3 "" H 50  -1775 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR44
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR44
 U 1 1 58C21560
 P 5500 2825
 F 0 "#PWR44" H -225 -500 50  0001 C CNN
@@ -90,7 +59,7 @@ F 3 "" H -225 -250 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR39
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR39
 U 1 1 58C21566
 P 5450 3800
 F 0 "#PWR39" H 150 700 50  0001 C CNN
@@ -101,7 +70,7 @@ F 3 "" H 150 850 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L R R8
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R8
 U 1 1 58C2156C
 P 5450 4200
 F 0 "R8" H 5520 4246 50  0000 L CNN
@@ -112,7 +81,7 @@ F 3 "" H 0   100 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR40
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR40
 U 1 1 58C21573
 P 5450 4450
 F 0 "#PWR40" H -275 1125 50  0001 C CNN
@@ -129,7 +98,7 @@ A1
 Text Label 5250 4000 2    60   ~ 0
 A2
 $Comp
-L CONN_01X02 NTC-1
+L noeud_senseur-rescue:CONN_01X02-RESCUE-noeud_senseur NTC-1
 U 1 1 58C2157C
 P 7100 1450
 F 0 "NTC-1" H 7178 1491 50  0000 L CNN
@@ -140,7 +109,7 @@ F 3 "" H 3875 -3575 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_01X02 NTC-2
+L noeud_senseur-rescue:CONN_01X02-RESCUE-noeud_senseur NTC-2
 U 1 1 58C21583
 P 7100 2675
 F 0 "NTC-2" H 7178 2716 50  0000 L CNN
@@ -151,7 +120,7 @@ F 3 "" H 3875 -2350 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MMBT3904 Q4
+L noeud_senseur-rescue:MMBT3904-RESCUE-noeud_senseur Q4
 U 1 1 58C21591
 P 2125 1475
 F 0 "Q4" H 2316 1521 50  0000 L CNN
@@ -162,7 +131,7 @@ F 3 "" H -500 -1275 50  0001 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R9
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R9
 U 1 1 58C21598
 P 1575 1475
 F 0 "R9" V 1700 1475 50  0000 L CNN
@@ -173,7 +142,7 @@ F 3 "" H -100 25  50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR32
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR32
 U 1 1 58C2159F
 P 2225 1950
 F 0 "#PWR32" H 2275 2000 50  0001 C CNN
@@ -186,7 +155,7 @@ $EndComp
 Text Label 1350 1475 0    60   ~ 0
 A4
 $Comp
-L R R11
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R11
 U 1 1 58C215A6
 P 1825 1700
 F 0 "R11" H 1900 1700 50  0000 L CNN
@@ -197,7 +166,7 @@ F 3 "" H 150 250 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L +3.3V #PWR31
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR31
 U 1 1 58C215AD
 P 2225 1000
 F 0 "#PWR31" H -3075 -2100 50  0001 C CNN
@@ -208,7 +177,7 @@ F 3 "" H -3075 -1950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_01X02 SSR-1
+L noeud_senseur-rescue:CONN_01X02-RESCUE-noeud_senseur SSR-1
 U 1 1 58C215B3
 P 3825 1150
 F 0 "SSR-1" H 3903 1191 50  0000 L CNN
@@ -219,7 +188,7 @@ F 3 "" H 600 -3875 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MMBT3904 Q5
+L noeud_senseur-rescue:MMBT3904-RESCUE-noeud_senseur Q5
 U 1 1 58C215BA
 P 2150 2875
 F 0 "Q5" H 2341 2921 50  0000 L CNN
@@ -230,7 +199,7 @@ F 3 "" H -475 125 50  0001 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R10
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R10
 U 1 1 58C215C1
 P 1600 2875
 F 0 "R10" V 1725 2875 50  0000 L CNN
@@ -241,7 +210,7 @@ F 3 "" H -75 1425 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR34
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR34
 U 1 1 58C215C8
 P 2250 3350
 F 0 "#PWR34" H 2300 3400 50  0001 C CNN
@@ -254,7 +223,7 @@ $EndComp
 Text Label 1375 2875 0    60   ~ 0
 A5
 $Comp
-L R R12
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R12
 U 1 1 58C215CF
 P 1850 3100
 F 0 "R12" H 1925 3100 50  0000 L CNN
@@ -265,7 +234,7 @@ F 3 "" H 175 1650 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L +3.3V #PWR33
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR33
 U 1 1 58C215D6
 P 2250 2400
 F 0 "#PWR33" H -3050 -700 50  0001 C CNN
@@ -276,7 +245,7 @@ F 3 "" H -3050 -550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_01X02 SSR-2
+L noeud_senseur-rescue:CONN_01X02-RESCUE-noeud_senseur SSR-2
 U 1 1 58C215DC
 P 3825 2550
 F 0 "SSR-2" H 3903 2591 50  0000 L CNN
@@ -340,7 +309,7 @@ Wire Wire Line
 Wire Wire Line
 	5500 1475 5500 1575
 $Comp
-L CONN_01X04 I2C-1
+L noeud_senseur-rescue:CONN_01X04-RESCUE-noeud_senseur I2C-1
 U 1 1 58C2216C
 P 10075 3225
 F 0 "I2C-1" H 10153 3266 50  0000 L CNN
@@ -355,7 +324,7 @@ SCL
 Text Label 8500 3275 0    60   ~ 0
 SDA
 $Comp
-L GND #PWR29
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR29
 U 1 1 58C22181
 P 1625 6125
 F 0 "#PWR29" H -4100 2800 50  0001 C CNN
@@ -370,7 +339,7 @@ TX
 Text Label 1675 5925 0    60   ~ 0
 RX
 $Comp
-L CONN_01X03 SER-1
+L noeud_senseur-rescue:CONN_01X03-RESCUE-noeud_senseur SER-1
 U 1 1 58C22189
 P 2025 6025
 F 0 "SER-1" H 2102 6066 50  0000 L CNN
@@ -383,7 +352,7 @@ $EndComp
 Text Label 1700 4425 0    60   ~ 0
 VBAT_FEATHER
 $Comp
-L GND #PWR35
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR35
 U 1 1 58C22198
 P 2325 4850
 F 0 "#PWR35" H -3400 1525 50  0001 C CNN
@@ -410,7 +379,7 @@ Wire Wire Line
 Wire Wire Line
 	8500 2700 8500 3075
 $Comp
-L CONN_01X02 CAN-1
+L noeud_senseur-rescue:CONN_01X02-RESCUE-noeud_senseur CAN-1
 U 1 1 58C31FB1
 P 9500 950
 F 0 "CAN-1" H 9578 991 50  0000 L CNN
@@ -421,7 +390,7 @@ F 3 "" H 6275 -4075 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CAN_NODE_JUNCTION CNJ-1
+L jfng:CAN_NODE_JUNCTION CNJ-1
 U 1 1 58C31FB8
 P 9025 1450
 F 0 "CNJ-1" H 9253 1404 50  0000 L CNN
@@ -432,7 +401,7 @@ F 3 "" H 5675 -1500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_01X02 CAN-2
+L noeud_senseur-rescue:CONN_01X02-RESCUE-noeud_senseur CAN-2
 U 1 1 58C31FBF
 P 9500 1950
 F 0 "CAN-2" H 9578 1991 50  0000 L CNN
@@ -483,7 +452,7 @@ TX
 Text HLabel 1225 4425 0    60   UnSpc ~ 0
 VBAT
 $Comp
-L L_Core_Ferrite L6
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L6
 U 1 1 58DDAE55
 P 3150 1300
 F 0 "L6" V 3275 1275 50  0000 C CNN
@@ -494,7 +463,7 @@ F 3 "" H 3150 1300 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L L_Core_Ferrite L5
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L5
 U 1 1 58DDAEDD
 P 3125 975
 F 0 "L5" V 3250 975 50  0000 C CNN
@@ -521,7 +490,7 @@ Wire Wire Line
 Wire Wire Line
 	3450 1200 3625 1200
 $Comp
-L L_Core_Ferrite L8
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L8
 U 1 1 58DDB704
 P 3175 2825
 F 0 "L8" V 3275 2800 50  0000 C CNN
@@ -532,7 +501,7 @@ F 3 "" H 3175 2825 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L L_Core_Ferrite L7
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L7
 U 1 1 58DDB7C0
 P 3150 2375
 F 0 "L7" V 3275 2375 50  0000 C CNN
@@ -567,7 +536,7 @@ Wire Wire Line
 Wire Wire Line
 	3475 2600 3625 2600
 $Comp
-L L_Core_Ferrite L13
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L13
 U 1 1 58DDE0D8
 P 9400 2675
 F 0 "L13" V 9500 2675 50  0000 C CNN
@@ -578,7 +547,7 @@ F 3 "" H 9400 2675 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L L_Core_Ferrite L14
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L14
 U 1 1 58DDE29F
 P 9400 2975
 F 0 "L14" V 9500 2975 50  0000 C CNN
@@ -589,7 +558,7 @@ F 3 "" H 9400 2975 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L L_Core_Ferrite L15
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L15
 U 1 1 58DDE2FD
 P 9400 3275
 F 0 "L15" V 9500 3275 50  0000 C CNN
@@ -600,7 +569,7 @@ F 3 "" H 9400 3275 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L L_Core_Ferrite L16
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L16
 U 1 1 58DDF543
 P 9400 3550
 F 0 "L16" V 9500 3550 50  0000 C CNN
@@ -659,7 +628,7 @@ Wire Wire Line
 Wire Wire Line
 	3450 975  3275 975 
 $Comp
-L L_Core_Ferrite L3
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L3
 U 1 1 58DF39DD
 P 6325 1300
 F 0 "L3" V 6450 1300 50  0000 C CNN
@@ -670,7 +639,7 @@ F 3 "" H 6325 1300 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L L_Core_Ferrite L4
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L4
 U 1 1 58DF3B0D
 P 6325 1675
 F 0 "L4" V 6450 1675 50  0000 C CNN
@@ -699,7 +668,7 @@ Wire Wire Line
 Wire Wire Line
 	6650 1675 6475 1675
 $Comp
-L L_Core_Ferrite L2
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L2
 U 1 1 58DF6081
 P 6200 4150
 F 0 "L2" V 6325 4150 50  0000 C CNN
@@ -710,7 +679,7 @@ F 3 "" H 6200 4150 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L L_Core_Ferrite L1
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L1
 U 1 1 58DF616B
 P 6200 3850
 F 0 "L1" V 6300 3850 50  0000 C CNN
@@ -735,7 +704,7 @@ Wire Wire Line
 Wire Wire Line
 	5875 4150 5875 4000
 $Comp
-L L_Core_Ferrite L10
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L10
 U 1 1 58DF84B8
 P 6250 2800
 F 0 "L10" V 6375 2800 50  0000 C CNN
@@ -746,7 +715,7 @@ F 3 "" H 6250 2800 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L L_Core_Ferrite L9
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L9
 U 1 1 58DF84BE
 P 6250 2500
 F 0 "L9" V 6350 2500 50  0000 C CNN
@@ -779,7 +748,7 @@ Wire Wire Line
 Wire Wire Line
 	6575 2725 6900 2725
 $Comp
-L CP C11
+L noeud_senseur-rescue:CP-RESCUE-noeud_senseur C11
 U 1 1 58E08EEC
 P 1650 4650
 F 0 "C11" H 1768 4696 50  0000 L CNN
@@ -793,7 +762,7 @@ Wire Wire Line
 	1650 4500 1650 4425
 Connection ~ 1650 4425
 $Comp
-L GND #PWR30
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR30
 U 1 1 58E09A07
 P 1650 4850
 F 0 "#PWR30" H -4075 1525 50  0001 C CNN
@@ -806,7 +775,7 @@ $EndComp
 Wire Wire Line
 	1650 4800 1650 4850
 $Comp
-L CONN_01X03 OW-1
+L noeud_senseur-rescue:CONN_01X03-RESCUE-noeud_senseur OW-1
 U 1 1 58E335DF
 P 10075 4150
 F 0 "OW-1" H 9993 3825 50  0000 C CNN
@@ -821,7 +790,7 @@ Wire Wire Line
 Wire Wire Line
 	9700 4050 9700 3900
 $Comp
-L +3.3V #PWR49
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR49
 U 1 1 58E3496B
 P 9700 3900
 F 0 "#PWR49" H 9700 3750 50  0001 C CNN
@@ -832,7 +801,7 @@ F 3 "" H 9700 3900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR50
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR50
 U 1 1 58E34A13
 P 9725 4325
 F 0 "#PWR50" H 9725 4075 50  0001 C CNN
@@ -851,7 +820,7 @@ Wire Wire Line
 Text HLabel 9525 4150 0    60   BiDi ~ 0
 1Wire
 $Comp
-L +3.3V #PWR45
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR45
 U 1 1 58E3EE78
 P 8025 2700
 F 0 "#PWR45" H 2725 -400 50  0001 C CNN
@@ -862,7 +831,7 @@ F 3 "" H 2725 -250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR46
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR46
 U 1 1 58E3EED3
 P 8500 2700
 F 0 "#PWR46" H 2775 -625 50  0001 C CNN
@@ -883,7 +852,7 @@ Wire Wire Line
 Text Label 9150 1150 0    60   ~ 0
 CAN-
 $Comp
-L CONN_01X04 TM-1
+L noeud_senseur-rescue:CONN_01X04-RESCUE-noeud_senseur TM-1
 U 1 1 58F821C4
 P 7350 4750
 F 0 "TM-1" H 7428 4791 50  0000 L CNN
@@ -898,7 +867,7 @@ Wire Wire Line
 Wire Wire Line
 	5925 5850 5400 5850
 $Comp
-L MMBT3904 Q6
+L noeud_senseur-rescue:MMBT3904-RESCUE-noeud_senseur Q6
 U 1 1 58F834C2
 P 5200 5850
 F 0 "Q6" H 5391 5896 50  0000 L CNN
@@ -911,7 +880,7 @@ $EndComp
 Wire Wire Line
 	5100 5650 5100 5000
 $Comp
-L +3.3V #PWR36
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR36
 U 1 1 58F83A9F
 P 5100 5000
 F 0 "#PWR36" H 5100 4850 50  0001 C CNN
@@ -922,7 +891,7 @@ F 3 "" H 5100 5000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR38
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR38
 U 1 1 58F83DFB
 P 5400 5000
 F 0 "#PWR38" H 5400 4850 50  0001 C CNN
@@ -933,7 +902,7 @@ F 3 "" H 5400 5000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R22
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R22
 U 1 1 58F83E84
 P 5400 5250
 F 0 "R22" H 5470 5296 50  0000 L CNN
@@ -948,7 +917,7 @@ Wire Wire Line
 Wire Wire Line
 	5400 5525 5400 5400
 $Comp
-L R R14
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R14
 U 1 1 58F8443B
 P 5100 6300
 F 0 "R14" H 5170 6346 50  0000 L CNN
@@ -959,7 +928,7 @@ F 3 "" H -350 2200 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR37
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR37
 U 1 1 58F844F7
 P 5100 6550
 F 0 "#PWR37" H -625 3225 50  0001 C CNN
@@ -985,7 +954,7 @@ Wire Wire Line
 Wire Wire Line
 	6625 4600 7150 4600
 $Comp
-L L_Core_Ferrite L11
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L11
 U 1 1 58F889B9
 P 6050 5525
 F 0 "L11" V 6150 5525 50  0000 C CNN
@@ -996,7 +965,7 @@ F 3 "" H 6050 5525 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L L_Core_Ferrite L12
+L noeud_senseur-rescue:L_Core_Ferrite-RESCUE-noeud_senseur L12
 U 1 1 58F88CC8
 P 6075 5850
 F 0 "L12" V 6175 5825 50  0000 C CNN
@@ -1021,7 +990,7 @@ Wire Wire Line
 Text Label 4800 6100 2    60   ~ 0
 A3
 $Comp
-L CONN_01X04 PWR-1
+L noeud_senseur-rescue:CONN_01X04-RESCUE-noeud_senseur PWR-1
 U 1 1 58F90612
 P 2875 4575
 F 0 "PWR-1" H 2953 4616 50  0000 L CNN
@@ -1034,7 +1003,7 @@ $EndComp
 NoConn ~ 2675 4625
 NoConn ~ 2675 4725
 $Comp
-L C_Small C13
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C13
 U 1 1 58FE90F0
 P 8250 2950
 F 0 "C13" V 8375 2900 50  0000 L CNN
@@ -1051,7 +1020,7 @@ Wire Wire Line
 	8150 2950 8025 2950
 Connection ~ 8025 2950
 $Comp
-L C_Small C14
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C14
 U 1 1 58FECBD0
 P 8825 4125
 F 0 "C14" H 8917 4171 50  0000 L CNN
@@ -1062,7 +1031,7 @@ F 3 "" H 2850 -2650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR47
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR47
 U 1 1 58FECEDD
 P 8825 3950
 F 0 "#PWR47" H 8825 3800 50  0001 C CNN
@@ -1073,7 +1042,7 @@ F 3 "" H 8825 3950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR48
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR48
 U 1 1 58FECF3E
 P 8825 4300
 F 0 "#PWR48" H 8825 4050 50  0001 C CNN
@@ -1088,7 +1057,7 @@ Wire Wire Line
 Wire Wire Line
 	8825 4225 8825 4300
 $Comp
-L +3.3V #PWR41
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR41
 U 1 1 5937FEAA
 P 5500 900
 F 0 "#PWR41" H 200 -2200 50  0001 C CNN
@@ -1106,7 +1075,7 @@ Connection ~ 5500 1375
 Wire Wire Line
 	5500 975  5500 900 
 $Comp
-L +3.3V #PWR43
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR43
 U 1 1 593814A4
 P 5500 2125
 F 0 "#PWR43" H 200 -975 50  0001 C CNN

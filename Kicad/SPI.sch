@@ -1,35 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:noeud_senseur-rescue
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:jfng
+EESchema Schematic File Version 4
 LIBS:noeud_senseur-cache
 EELAYER 26 0
 EELAYER END
@@ -46,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L +3.3V #PWR16
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR16
 U 1 1 58C15170
 P 4875 4275
 F 0 "#PWR16" H 1350 -1200 50  0001 C CNN
@@ -57,7 +26,7 @@ F 3 "" H 1350 -1050 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR17
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR17
 U 1 1 58C15188
 P 5150 5850
 F 0 "#PWR17" H 5200 5900 50  0001 C CNN
@@ -68,7 +37,7 @@ F 3 "" H -2750 3750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C_Small C4
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C4
 U 1 1 58C151A0
 P 5100 4475
 F 0 "C4" H 5192 4521 50  0000 L CNN
@@ -79,7 +48,7 @@ F 3 "" H -875 -2300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C_Small C5
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C5
 U 1 1 58C151A7
 P 5475 4475
 F 0 "C5" H 5567 4521 50  0000 L CNN
@@ -90,7 +59,7 @@ F 3 "" H -500 -2300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR18
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR18
 U 1 1 58C151B6
 P 5275 4650
 F 0 "#PWR18" H -2750 3375 50  0001 C CNN
@@ -101,7 +70,7 @@ F 3 "" H -2750 3625 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MCP2515 U5
+L jfng:MCP2515 U5
 U 1 1 58C161DD
 P 6375 2750
 F 0 "U5" H 6025 3300 60  0000 C CNN
@@ -112,7 +81,7 @@ F 3 "" H 2700 -650 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR20
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR20
 U 1 1 58C161E4
 P 7150 1800
 F 0 "#PWR20" H 7200 1850 50  0001 C CNN
@@ -128,7 +97,7 @@ NoConn ~ 5725 2650
 NoConn ~ 5725 2750
 NoConn ~ 5725 2850
 $Comp
-L GND #PWR19
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR19
 U 1 1 58C161F0
 P 5725 3150
 F 0 "#PWR19" H 5775 3200 50  0001 C CNN
@@ -140,7 +109,7 @@ F 3 "" H -500 -700 50  0001 C CNN
 $EndComp
 NoConn ~ 5725 2550
 $Comp
-L Crystal_Small Y1
+L noeud_senseur-rescue:Crystal_Small-RESCUE-noeud_senseur Y1
 U 1 1 58C16201
 P 5225 3025
 F 0 "Y1" V 5325 2975 50  0000 R CNN
@@ -151,7 +120,7 @@ F 3 "" H -350 -800 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L C_Small C2
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C2
 U 1 1 58C16208
 P 5050 2775
 F 0 "C2" V 4925 2775 50  0000 C CNN
@@ -162,7 +131,7 @@ F 3 "" H -550 -900 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L C_Small C3
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C3
 U 1 1 58C1620F
 P 5050 3275
 F 0 "C3" V 4925 3275 50  0000 C CNN
@@ -173,7 +142,7 @@ F 3 "" H -550 -400 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR15
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR15
 U 1 1 58C16216
 P 4825 3425
 F 0 "#PWR15" H -500 -950 50  0001 C CNN
@@ -184,7 +153,7 @@ F 3 "" H -500 -700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR12
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR12
 U 1 1 58C1621C
 P 4075 1175
 F 0 "#PWR12" H 4125 1225 50  0001 C CNN
@@ -195,7 +164,7 @@ F 3 "" H -3700 -1700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR13
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR13
 U 1 1 58C16222
 P 4075 3025
 F 0 "#PWR13" H 4125 3075 50  0001 C CNN
@@ -206,7 +175,7 @@ F 3 "" H -2150 -825 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C_Small C6
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C6
 U 1 1 58C1623F
 P 7350 1950
 F 0 "C6" V 7450 1900 50  0000 L CNN
@@ -217,7 +186,7 @@ F 3 "" H 1375 -4825 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L GND #PWR21
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR21
 U 1 1 58C16246
 P 7525 2075
 F 0 "#PWR21" H 1800 -1250 50  0001 C CNN
@@ -228,7 +197,7 @@ F 3 "" H 1800 -1000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C_Small C1
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C1
 U 1 1 58C1624C
 P 4400 1300
 F 0 "C1" V 4300 1250 50  0000 L CNN
@@ -239,7 +208,7 @@ F 3 "" H -1575 -5475 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR14
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR14
 U 1 1 58C16253
 P 4650 1425
 F 0 "#PWR14" H 4700 1475 50  0001 C CNN
@@ -274,7 +243,7 @@ SD_CS
 NoConn ~ 6175 4875
 NoConn ~ 6175 5575
 $Comp
-L C_Small C12
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C12
 U 1 1 58EFF980
 P 5900 4475
 F 0 "C12" H 5992 4521 50  0000 L CNN
@@ -289,7 +258,7 @@ TXC
 Text Label 4650 2450 0    60   ~ 0
 RXC
 $Comp
-L Micro_SD_Card_no_shield uSD-1
+L jfng:Micro_SD_Card_no_shield uSD-1
 U 1 1 5900282A
 P 7075 5275
 F 0 "uSD-1" H 7019 4458 50  0000 C CNN
@@ -300,7 +269,7 @@ F 3 "" H 7075 5275 50  0001 C CNN
 	1    0    0    1   
 $EndComp
 $Comp
-L SN65HVD232Q U4
+L jfng:SN65HVD232Q U4
 U 1 1 5938C27E
 P 4075 2550
 F 0 "U4" H 4400 2900 50  0000 C CNN
@@ -399,7 +368,7 @@ Connection ~ 7150 1950
 Wire Wire Line
 	7450 1950 7525 1950
 $Comp
-L R R23
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R23
 U 1 1 5938D9DF
 P 7775 2100
 F 0 "R23" H 7845 2146 50  0000 L CNN
@@ -412,7 +381,7 @@ $EndComp
 Wire Wire Line
 	7775 1950 7775 1800
 $Comp
-L +3.3V #PWR22
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR22
 U 1 1 5938DB22
 P 7775 1800
 F 0 "#PWR22" H 7825 1850 50  0001 C CNN

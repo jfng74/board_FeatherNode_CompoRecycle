@@ -441,7 +441,8 @@ void NodeFeatherCompost::send_node_ready(void){
 }
 
 void NodeFeatherCompost::resetEEPROM(int deviceaddress){
-	Serial1.print("resetEEPROM()");
+	Serial1.println("resetEEPROM()");
+
   for(int eeaddress = 0;eeaddress<EEPROM_MAX_ADDRESS;eeaddress++){
     writeEEPROM(deviceaddress, eeaddress, EEPROM_INIT_VALUE);
     Serial1.println(eeaddress);
@@ -449,13 +450,20 @@ void NodeFeatherCompost::resetEEPROM(int deviceaddress){
 }
 
 void NodeFeatherCompost::writeEEPROM(int deviceaddress, unsigned int eeaddress, byte data ){
-  Wire.beginTransmission(deviceaddress);
-  Wire.write((int)(eeaddress >> 8));   // MSB
-  Wire.write((int)(eeaddress & 0xFF)); // LSB
-  Wire.write(data);
-  Wire.endTransmission();
 
+  Serial1.println("writeEEPROM : beginTransmission");
+  Wire.beginTransmission(deviceaddress);
+//  Serial1.println("writeEEPROM : write");
+  Wire.write((int)(eeaddress >> 8));   // MSB
+//  Serial1.println("writeEEPROM : write");
+  Wire.write((int)(eeaddress & 0xFF)); // LSB
+//  Serial1.println("writeEEPROM : write");
+  Wire.write(data);
+  Serial1.println("writeEEPROM : endTransmission");
+  Wire.endTransmission();
+//  Serial1.println("writeEEPROM : delay");
   delay(5);
+//  Serial1.println("writeEEPROM : finish");
 }
 
 byte NodeFeatherCompost::readEEPROM(int deviceaddress, unsigned int eeaddress ){

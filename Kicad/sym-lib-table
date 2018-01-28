@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name noeud_senseur-rescue)(type Legacy)(uri ${KIPRJMOD}/noeud_senseur-rescue.lib)(options "")(descr ""))
+  (lib (name jfng)(type Legacy)(uri /home/caribou/Kicad_project/jfng_library/jfng.lib)(options "")(descr ""))
+)

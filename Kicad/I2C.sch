@@ -1,35 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:noeud_senseur-rescue
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:jfng
+EESchema Schematic File Version 4
 LIBS:noeud_senseur-cache
 EELAYER 26 0
 EELAYER END
@@ -46,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L AT24LC256 U6
+L jfng:AT24LC256 U6
 U 1 1 58C0D972
 P 4300 5325
 F 0 "U6" H 4125 5575 50  0000 C CNN
@@ -57,7 +26,7 @@ F 3 "" H -1250 4050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR24
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR24
 U 1 1 58C0D979
 P 4300 5800
 F 0 "#PWR24" H -1425 2475 50  0001 C CNN
@@ -68,7 +37,7 @@ F 3 "" H -1425 2725 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR23
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR23
 U 1 1 58C0D97F
 P 4300 4625
 F 0 "#PWR23" H -1000 1525 50  0001 C CNN
@@ -83,7 +52,7 @@ SCL
 Text Label 4750 5225 0    60   ~ 0
 SDA
 $Comp
-L C_Small C7
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C7
 U 1 1 58C0D987
 P 5150 4825
 F 0 "C7" H 5242 4871 50  0000 L CNN
@@ -94,7 +63,7 @@ F 3 "" H -825 -1950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR27
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR27
 U 1 1 58C0D98E
 P 5150 4950
 F 0 "#PWR27" H 5200 5000 50  0001 C CNN
@@ -136,7 +105,7 @@ Wire Wire Line
 Wire Wire Line
 	4300 4625 4300 4975
 $Comp
-L DS3231 U7
+L jfng:DS3231 U7
 U 1 1 58C1AA49
 P 4675 2900
 F 0 "U7" H 4950 3300 50  0000 C CNN
@@ -147,7 +116,7 @@ F 3 "" H -1880 275 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR25
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR25
 U 1 1 58C1AA50
 P 4675 1925
 F 0 "#PWR25" H -625 -1175 50  0001 C CNN
@@ -158,7 +127,7 @@ F 3 "" H -625 -1025 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR26
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR26
 U 1 1 58C1AA56
 P 4675 3700
 F 0 "#PWR26" H -1050 375 50  0001 C CNN
@@ -173,7 +142,7 @@ SCL
 Text Label 5200 2900 0    60   ~ 0
 SDA
 $Comp
-L Battery_Cell BT1
+L noeud_senseur-rescue:Battery_Cell-RESCUE-noeud_senseur BT1
 U 1 1 58C1AA5E
 P 3950 3375
 F 0 "BT1" H 4068 3471 50  0000 L CNN
@@ -188,7 +157,7 @@ SQW
 NoConn ~ 4175 2900
 NoConn ~ 5175 3100
 $Comp
-L PWR_FLAG #FLG3
+L noeud_senseur-rescue:PWR_FLAG-RESCUE-noeud_senseur #FLG3
 U 1 1 58C1AA68
 P 3950 3075
 F 0 "#FLG3" H -2150 -300 50  0001 C CNN
@@ -199,7 +168,7 @@ F 3 "" H -2150 -375 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L C_Small C8
+L noeud_senseur-rescue:C_Small-RESCUE-noeud_senseur C8
 U 1 1 58C1AA6E
 P 5325 2275
 F 0 "C8" H 5417 2321 50  0000 L CNN
@@ -210,7 +179,7 @@ F 3 "" H -650 -4500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR28
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR28
 U 1 1 58C1AA75
 P 5325 2425
 F 0 "#PWR28" H -400 -900 50  0001 C CNN

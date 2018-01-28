@@ -1,35 +1,4 @@
-EESchema Schematic File Version 2
-LIBS:noeud_senseur-rescue
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:jfng
+EESchema Schematic File Version 4
 LIBS:noeud_senseur-cache
 EELAYER 26 0
 EELAYER END
@@ -50,7 +19,7 @@ SCL
 Text Label 3550 3000 0    60   ~ 0
 SDA
 $Comp
-L +3.3V #PWR8
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR8
 U 1 1 588F82DF
 P 4725 2375
 F 0 "#PWR8" H -575 -725 50  0001 C CNN
@@ -61,7 +30,7 @@ F 3 "" H -575 -575 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R4
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R4
 U 1 1 588F82F4
 P 4725 2650
 F 0 "R4" H 4795 2696 50  0000 L CNN
@@ -72,7 +41,7 @@ F 3 "" H -725 -1450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R6
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R6
 U 1 1 588F834B
 P 5025 2650
 F 0 "R6" H 5095 2696 50  0000 L CNN
@@ -83,7 +52,7 @@ F 3 "" H -425 -1450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR3
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR3
 U 1 1 588FA539
 P 1875 1525
 F 0 "#PWR3" H -3425 -1575 50  0001 C CNN
@@ -102,7 +71,7 @@ A1
 Text Label 1750 2100 0    60   ~ 0
 A2
 $Comp
-L GND #PWR1
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR1
 U 1 1 588FEF8A
 P 1325 1975
 F 0 "#PWR1" H -4400 -1350 50  0001 C CNN
@@ -119,7 +88,7 @@ Text Label 4125 2800 2    60   ~ 0
 Text Label 4250 5775 0    60   ~ 0
 1_WIRE_IO
 $Comp
-L +3.3V #PWR9
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR9
 U 1 1 5890E20D
 P 5050 5325
 F 0 "#PWR9" H -250 2225 50  0001 C CNN
@@ -130,7 +99,7 @@ F 3 "" H -250 2375 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR10
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR10
 U 1 1 5890E24B
 P 5050 5950
 F 0 "#PWR10" H -675 2625 50  0001 C CNN
@@ -157,7 +126,7 @@ NoConn ~ 2700 3600
 NoConn ~ 2900 3600
 NoConn ~ 3450 2200
 $Comp
-L R R5
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R5
 U 1 1 58A27935
 P 4775 5550
 F 0 "R5" H 4845 5596 50  0000 L CNN
@@ -172,7 +141,7 @@ A4
 Text Label 1750 2400 0    60   ~ 0
 A5
 $Comp
-L GND #PWR5
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR5
 U 1 1 58A6E58C
 P 2125 5925
 F 0 "#PWR5" H -3600 2600 50  0001 C CNN
@@ -183,7 +152,7 @@ F 3 "" H -3600 2850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L LED D1
+L noeud_senseur-rescue:LED-RESCUE-noeud_senseur D1
 U 1 1 58A70BCB
 P 2125 5200
 F 0 "D1" V 2163 5083 50  0000 R CNN
@@ -194,7 +163,7 @@ F 3 "" H -425 4100 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R1
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R1
 U 1 1 58A71790
 P 2125 4825
 F 0 "R1" H 2195 4871 50  0000 L CNN
@@ -205,7 +174,7 @@ F 3 "" H 450 3375 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR4
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR4
 U 1 1 58A718EA
 P 2125 4625
 F 0 "#PWR4" H -3175 1525 50  0001 C CNN
@@ -218,7 +187,7 @@ $EndComp
 Text Label 1550 5700 0    60   ~ 0
 LED_1
 $Comp
-L DMG1012T Q1
+L jfng:DMG1012T Q1
 U 1 1 58A736DE
 P 2025 5650
 F 0 "Q1" H 2216 5696 50  0000 L CNN
@@ -229,7 +198,7 @@ F 3 "" H 4250 3325 50  0001 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR7
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR7
 U 1 1 58A74946
 P 3300 5925
 F 0 "#PWR7" H -2425 2600 50  0001 C CNN
@@ -240,7 +209,7 @@ F 3 "" H -2425 2850 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L LED D2
+L noeud_senseur-rescue:LED-RESCUE-noeud_senseur D2
 U 1 1 58A7494E
 P 3300 5200
 F 0 "D2" V 3338 5083 50  0000 R CNN
@@ -251,7 +220,7 @@ F 3 "" H 750 4100 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R2
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R2
 U 1 1 58A74954
 P 3300 4825
 F 0 "R2" H 3370 4871 50  0000 L CNN
@@ -262,7 +231,7 @@ F 3 "" H 1625 3375 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR6
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR6
 U 1 1 58A7495A
 P 3300 4625
 F 0 "#PWR6" H -2000 1525 50  0001 C CNN
@@ -275,7 +244,7 @@ $EndComp
 Text Label 2725 5700 0    60   ~ 0
 LED_2
 $Comp
-L DMG1012T Q2
+L jfng:DMG1012T Q2
 U 1 1 58A74964
 P 3200 5650
 F 0 "Q2" H 3391 5696 50  0000 L CNN
@@ -286,7 +255,7 @@ F 3 "" H 5425 3325 50  0001 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR2
+L noeud_senseur-rescue:+3.3V-RESCUE-noeud_senseur #PWR2
 U 1 1 58A74E2F
 P 1625 1525
 F 0 "#PWR2" H -3675 -1575 50  0001 C CNN
@@ -307,7 +276,7 @@ Text Label 4125 2700 2    60   ~ 0
 MCP2515_INT
 NoConn ~ 3450 1900
 $Comp
-L FEATHER_MO_LORA-RESCUE-noeud_senseur Adafruit_Feather-1
+L noeud_senseur-rescue:FEATHER_MO_LORA-RESCUE-noeud_senseur Adafruit_Feather-1
 U 1 1 58A7C9E5
 P 2800 2400
 F 0 "Adafruit_Feather-1" H 2787 3687 60  0000 C CNN
@@ -318,7 +287,7 @@ F 3 "" H 525 -2000 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L PWR_FLAG #FLG2
+L noeud_senseur-rescue:PWR_FLAG-RESCUE-noeud_senseur #FLG2
 U 1 1 58A85600
 P 4400 1425
 F 0 "#FLG2" H 0   -3175 50  0001 C CNN
@@ -329,7 +298,7 @@ F 3 "" H 0   -3250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L PWR_FLAG #FLG1
+L noeud_senseur-rescue:PWR_FLAG-RESCUE-noeud_senseur #FLG1
 U 1 1 58A87270
 P 1325 1650
 F 0 "#FLG1" H 225 -3225 50  0001 C CNN
@@ -340,7 +309,7 @@ F 3 "" H 225 -3300 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L ORD211-1015 S1
+L jfng:ORD211-1015 S1
 U 1 1 58AD8EEB
 P 5775 1900
 F 0 "S1" V 5722 1988 60  0000 L CNN
@@ -351,7 +320,7 @@ F 3 "" H 1625 -2150 60  0001 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR11
+L noeud_senseur-rescue:GND-RESCUE-noeud_senseur #PWR11
 U 1 1 58AE33ED
 P 5775 2175
 F 0 "#PWR11" H 50  -1150 50  0001 C CNN
@@ -362,7 +331,7 @@ F 3 "" H 50  -900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Q_PMOS_SGD Q3
+L jfng:Q_PMOS_SGD Q3
 U 1 1 58AF3766
 P 4350 1775
 F 0 "Q3" H 4556 1729 50  0000 L CNN
@@ -373,7 +342,7 @@ F 3 "" H -775 -3250 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L R R3
+L noeud_senseur-rescue:R-RESCUE-noeud_senseur R3
 U 1 1 58AF4304
 P 4700 1500
 F 0 "R3" V 4625 1450 50  0000 L CNN
@@ -387,14 +356,14 @@ Connection ~ 4975 1625
 Wire Wire Line
 	4975 1500 4850 1500
 Wire Wire Line
-	4975 1500 4975 1775
+	4975 1500 4975 1625
 Wire Wire Line
 	4975 1775 4550 1775
 Connection ~ 4250 1500
 Wire Wire Line
 	4250 1500 4250 1575
 Wire Wire Line
-	3525 1500 4550 1500
+	3525 1500 4250 1500
 Wire Wire Line
 	4250 2000 4250 1975
 Wire Wire Line
@@ -474,15 +443,15 @@ Wire Wire Line
 Wire Wire Line
 	5050 5675 5525 5675
 Wire Wire Line
-	5050 5325 5050 5675
+	5050 5325 5050 5400
 Wire Wire Line
-	4200 5775 5525 5775
+	4200 5775 4775 5775
 Wire Wire Line
 	3450 2800 4125 2800
 Wire Wire Line
 	1625 1700 2100 1700
 Wire Wire Line
-	1325 1650 1325 1975
+	1325 1650 1325 1800
 Wire Wire Line
 	2100 2000 1750 2000
 Wire Wire Line
@@ -499,7 +468,7 @@ Connection ~ 4725 2450
 Wire Wire Line
 	5025 2450 5025 2500
 Wire Wire Line
-	4725 2375 4725 2500
+	4725 2375 4725 2450
 Wire Wire Line
 	3450 3000 5025 3000
 Wire Wire Line
@@ -550,7 +519,7 @@ F14 "PTC" O L 8700 3225 60
 F15 "MOISTURE" O L 8700 3325 60 
 $EndSheet
 Wire Wire Line
-	4975 1625 6600 1625
+	4975 1625 5400 1625
 Wire Wire Line
 	6600 1725 6225 1725
 Wire Wire Line
@@ -654,7 +623,7 @@ Wire Wire Line
 Text Label 8025 4100 0    60   ~ 0
 1_WIRE_IO
 $Comp
-L DS18B20 U2
+L jfng:DS18B20 U2
 U 1 1 593A33A5
 P 5825 5775
 F 0 "U2" H 6052 5821 50  0000 L CNN
@@ -665,7 +634,7 @@ F 3 "" H 5675 6025 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Jumper JP1
+L noeud_senseur-rescue:Jumper-RESCUE-noeud_senseur JP1
 U 1 1 5949FBE4
 P 5100 2050
 F 0 "JP1" H 5100 2314 50  0000 C CNN
@@ -685,4 +654,22 @@ Wire Wire Line
 	4475 2700 4475 2050
 Wire Wire Line
 	4475 2050 4800 2050
+Wire Wire Line
+	4975 1625 4975 1775
+Wire Wire Line
+	4250 1500 4400 1500
+Wire Wire Line
+	1325 1800 1325 1975
+Wire Wire Line
+	4400 1500 4550 1500
+Wire Wire Line
+	5050 5400 5050 5675
+Wire Wire Line
+	4775 5775 5525 5775
+Wire Wire Line
+	4725 2450 4725 2500
+Wire Wire Line
+	5775 1625 6600 1625
+Wire Wire Line
+	5400 1625 5775 1625
 $EndSCHEMATC
